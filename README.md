@@ -1,32 +1,32 @@
 # Agent Skills
 
-A collection of agent skills for structured thinking, multi-perspective analysis, and development workflows.
+構造化思考・多角的分析・開発ワークフローのためのエージェントスキル集。
 
-## Thinking & Analysis
+## 思考・分析
 
-Skills that apply structured cognitive frameworks to decisions and problem-solving.
+意思決定や問題解決に認知フレームワークを適用するスキル。
 
-- **thinking-ensemble** — 16 MBTI cognitive lenses across 4 parallel agent groups (NT/NF/SJ/SP). Maximizes perspective diversity by running all 4 groups simultaneously as sub-agents and synthesizing with task-weighted integration.
+- **thinking-ensemble** — 16の MBTI 認知レンズを NT / NF / SJ / SP の4グループに分け、全グループを並列サブエージェントとして同時起動。タスク重みづけ統合で認知的多様性を最大化する。
 
 ```
 npx skills@latest add oreore/skills/thinking-ensemble
 ```
 
-## Install
+## インストール
 
 ```bash
-# Install individual skills
+# スキルを個別にインストール
 npx skills@latest add oreore/skills/<skill-name>
 ```
 
-## Skill Structure
+## スキル構成
 
-Each skill lives in its own directory:
+各スキルは独自のディレクトリに格納。
 
 ```
 <skill-name>/
-├── SKILL.md          # Main skill definition (loaded by Cursor)
-└── *.md              # Supporting files bundled with the skill
+├── SKILL.md          # スキル本体（Cursor が読み込む）
+└── *.md              # スキルに同梱するサポートファイル
 ```
 
-Skills are designed for [Cursor](https://cursor.com) and follow the Agent Skills format.
+スキルは [Cursor](https://cursor.com) 向けに設計され、Agent Skills フォーマットに準拠。
