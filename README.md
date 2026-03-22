@@ -9,7 +9,7 @@
 - **thinking-ensemble** — 16の MBTI 認知レンズを NT / NF / SJ / SP の4グループに分け、全グループを並列サブエージェントとして同時起動。タスク重みづけ統合で認知的多様性を最大化する。
 
 ```
-npx skills@latest add oreore/skills/thinking-ensemble
+npx skills@latest add 53able/skills/thinking-ensemble
 ```
 
 ## インストール
@@ -19,7 +19,7 @@ npx skills@latest add oreore/skills/thinking-ensemble
 
 ```bash
 # スキルを個別にインストール（GitHub に push 済みの場合）
-npx skills@latest add oreore/skills/<skill-name>
+npx skills@latest add 53able/skills/<skill-name>
 ```
 
 ## スキル構成
