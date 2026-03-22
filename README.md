@@ -14,8 +14,11 @@ npx skills@latest add oreore/skills/thinking-ensemble
 
 ## インストール
 
+このリポジトリを GitHub に public で公開後、以下のコマンドでインストールできる。
+`skills` CLI は npm パッケージではなく **GitHub リポジトリから直接取得**する仕組みなので、npm への登録は不要。
+
 ```bash
-# スキルを個別にインストール
+# スキルを個別にインストール（GitHub に push 済みの場合）
 npx skills@latest add oreore/skills/<skill-name>
 ```
 
