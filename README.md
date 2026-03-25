@@ -11,6 +11,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **thinking-ensemble** — 16の MBTI 認知レンズを NT / NF / SJ / SP の4グループに分け、全グループを並列サブエージェントとして同時起動。タスク重みづけ統合で認知的多様性を最大化する。
 
+## 動画生成
+
+ミーティングや議事録からエクスプレイナービデオを自動生成するスキル。
+
+- **meeting-to-video** — ミーティングのトランスクリプトから Remotion ストーリー型ビデオプロジェクトを生成する。`npx remotion preview` でローカルプレビューできる状態まで自動構築する。ElevenLabs / OpenAI TTS によるボイスオーバー生成にも対応。
+
 ## インストール
 
 このリポジトリを GitHub に public で公開後、以下のコマンドでインストールできる。
@@ -21,9 +27,11 @@ npx skills add 53able/skills
 
 # 特定のスキルだけインストール
 npx skills add 53able/skills --skill thinking-ensemble
+npx skills add 53able/skills --skill meeting-to-video
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
+npx skills add 53able/skills --skill meeting-to-video -g -a cursor
 ```
 
 ## スキル構成
