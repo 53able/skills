@@ -1,6 +1,6 @@
 ---
 name: meeting-to-video
-description: ミーティングのトランスクリプト（プレーンテキスト）から Remotion ストーリー型ビデオプロジェクトを生成する。`npx remotion preview` でローカルプレビューできる状態まで自動構築する。Use when: meeting transcript, meeting summary video, meeting recap video, ミーティング動画, 議事録動画。
+description: "ミーティングのトランスクリプト（プレーンテキスト）から Remotion ストーリー型ビデオプロジェクトを生成する。npx remotion preview でローカルプレビューできる状態まで自動構築する。Use when: meeting transcript, meeting summary video, meeting recap video, ミーティング動画, 議事録動画。"
 ---
 
 # Meeting to Video
