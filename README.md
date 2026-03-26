@@ -34,12 +34,20 @@ npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
 npx skills add 53able/skills --skill meeting-to-video -g -a cursor
 ```
 
+サブディレクトリだけ指定する場合:
+
+```bash
+npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
+```
+
 ## スキル構成
 
-各スキルは独自のディレクトリに格納。
+各スキルは `skills/<skill-name>/` に配置する。
 
 ```
-<skill-name>/
+skills/<skill-name>/
 ├── SKILL.md          # スキル本体（各エージェントが読み込む）
-└── *.md              # スキルに同梱するサポートファイル
+└── *.md              # スキルに同梱するサポートファイル（任意）
 ```
+
+エージェント向けのリポジトリ運用メモは [AGENTS.md](./AGENTS.md) を参照。
