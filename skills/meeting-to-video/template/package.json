@@ -2,6 +2,9 @@
   "name": "meeting-video",
   "version": "1.0.0",
   "private": true,
+  "overrides": {
+    "loader-utils": "2.0.4"
+  },
   "scripts": {
     "preview": "npx remotion preview",
     "render": "npx remotion render StoryVideo out/video.mp4",

@@ -136,6 +136,16 @@ bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
 Write: <output-dir>/content.json ← Step 2 の JSON
 ```
 
+### Step 3b（任意）: Remotion 公式スキル
+
+`remotion-best-practices` などをプロジェクトに取り込む場合のみ実行する。`setup.sh` では実行しない（ロックファイルに基づく `npm ci` のみにし、セットアップ中に別リポジトリのスキルを `npx` で取り込まない）。
+
+```bash
+cd <output-dir> && npx skills add remotion-dev/skills --yes
+```
+
+失敗しても Remotion 公式ドキュメントを手動参照すれば続行できる: https://remotion.dev/docs
+
 ### Step 4: ボイスオーバー（ユーザーが要求した場合のみ）
 
 ```bash
@@ -162,7 +172,7 @@ cd <output-dir> && npx remotion preview
 | エラー | 対応 |
 |---|---|
 | Zodバリデーション失敗 | エラー詳細を確認してJSONを修正、再バリデーション |
-| npm install 失敗 | `node --version` で v18+ を確認 |
-| `npx skills add` 失敗 | リトライ後も失敗する場合はスキップして続行 |
+| `npm ci` 失敗 | `node --version` で v18+ を確認。`package-lock.json` が壊れていないか確認。どうしても通らない場合は `cd <output-dir> && rm -rf node_modules && npm install` で代替（ロックとズレる可能性あり） |
+| Step 3b の `npx skills add` 失敗 | スキップして続行。Remotion 公式ドキュメントを参照 |
 | プレビュー起動失敗 | `npx remotion preview --port 3001` でポート変更 |
 | TTS API 失敗 | ボイスオーバーなしで続行（音声はオプション） |
