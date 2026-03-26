@@ -50,10 +50,10 @@ Remotion コードを触る前に `remotion-best-practices` のガイドを参�
 
 **どこから読むか（優先順）**
 
-1. **Step 3b を実行済み** — プロジェクト配下（例: `.cursor/skills/` や `rules/`、環境により異なる）に展開された同名ファイルを `Read` する。
-2. **未実行** — [remotion-dev/skills](https://github.com/remotion-dev/skills) のリポジトリ上の該当 `.md`、または [Remotion 公式ドキュメント](https://remotion.dev/docs) を参照する。
+1. **`setup.sh` 完了後（通常）** — プロジェクト直下の `.agents/skills/remotion-best-practices/` に展開された `SKILL.md` および `rules/*.md` を `Read` する（`npx skills` の標準配置）。
+2. **マーカーが無い／オフラインで setup した場合** — [remotion-dev/skills](https://github.com/remotion-dev/skills) のリポジトリ上の該当 `.md`、または [Remotion 公式ドキュメント](https://remotion.dev/docs) を参照する。
 
-Step 3b は任意だが、エージェントがローカルで一括参照するなら、Step 3 の直後・`content.json` 上書きの前後いずれでも実行してよい。
+`setup.sh` が `remotion-best-practices` を未検出なら `npx skills add remotion-dev/skills --yes` を実行する。手動で先に入れておいてもよい（マーカーがあれば setup はスキップする）。
 
 ## Workflow
 
@@ -136,6 +136,8 @@ fi
 bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
 ```
 
+`setup.sh` は `npm ci` のあと、`<output-dir>/.agents/skills/remotion-best-practices/SKILL.md` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（ネットワーク必須）。
+
 リポジトリをクローンしただけで上記ループがヒットしない場合は、`skills/meeting-to-video/scripts/resolve-skill-dir.sh` を絶対パスで `source` すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
 
 完了後、テンプレートの `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
@@ -144,15 +146,13 @@ bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
 Write: <output-dir>/content.json ← Step 2 の JSON
 ```
 
-### Step 3b（任意）: Remotion 公式スキル
+### Step 3b: Remotion 公式スキル（通常は自動）
 
-`remotion-best-practices` などを**プロジェクトに取り込む場合のみ**実行する。`setup.sh` では実行しない（`npm ci` とロックファイルだけにし、セットアップ中に別リポジトリのスキルを `npx` で取り込まない）。
+`setup.sh` 内で処理する。手動で入れ直したい場合のみ:
 
 ```bash
 cd <output-dir> && npx skills add remotion-dev/skills --yes
 ```
-
-失敗しても [Remotion 公式ドキュメント](https://remotion.dev/docs) または GitHub 上の [remotion-dev/skills](https://github.com/remotion-dev/skills) で続行できる（上記「Remotion rules to load」参照）。
 
 ### Step 4: ボイスオーバー（ユーザーが要求した場合のみ）
 
@@ -181,6 +181,6 @@ cd <output-dir> && npx remotion preview
 |---|---|
 | Zodバリデーション失敗 | エラー詳細を確認してJSONを修正、再バリデーション |
 | `npm ci` 失敗 | `node --version` で v18+ を確認。`package-lock.json` が壊れていないか確認。どうしても通らない場合は `cd <output-dir> && rm -rf node_modules && npm install` で代替（ロックとズレる可能性あり） |
-| Step 3b の `npx skills add` 失敗 | スキップして続行。Remotion 公式ドキュメントを参照 |
+| `npx skills add remotion-dev/skills` 失敗（setup 内） | ネットワーク・`npx skills` を確認。手動で `cd <output-dir> && npx skills add remotion-dev/skills --yes` を再試行。どうしても不可なら [Remotion 公式ドキュメント](https://remotion.dev/docs) または [remotion-dev/skills](https://github.com/remotion-dev/skills) を参照して続行 |
 | プレビュー起動失敗 | `npx remotion preview --port 3001` でポート変更 |
 | TTS API 失敗 | ボイスオーバーなしで続行（音声はオプション） |

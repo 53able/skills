@@ -1,7 +1,7 @@
 #!/bin/bash
 # Usage: bash setup.sh <output-dir>
-# Copies the Remotion template to <output-dir> and installs deps from package-lock.json (npm ci).
-# Remotion 公式スキルは SKILL.md の任意ステップで npx 実行する（setup 内ではネット上の別スキルを取り込まない）。
+# Copies the Remotion template to <output-dir>, runs npm ci, then ensures remotion-dev/skills
+# (skill name: remotion-best-practices) is present under .agents/skills/ — runs npx skills add if missing.
 
 set -e
 
@@ -19,7 +19,14 @@ cd "$OUTPUT_DIR"
 rm -rf node_modules
 npm ci
 
+REMOTION_SKILL_MARK=".agents/skills/remotion-best-practices/SKILL.md"
+if [[ ! -f "$REMOTION_SKILL_MARK" ]]; then
+  echo "→ Installing remotion-dev/skills (remotion-best-practices) — $REMOTION_SKILL_MARK not found"
+  npx skills add remotion-dev/skills --yes
+else
+  echo "→ remotion-best-practices already present ($REMOTION_SKILL_MARK), skipping npx skills add"
+fi
+
 echo ""
 echo "✓ Setup complete."
 echo "  Next: write content.json, then run: cd $OUTPUT_DIR && npx remotion preview"
-echo "  Optional: Remotion official skills → see SKILL.md Step 3b"
