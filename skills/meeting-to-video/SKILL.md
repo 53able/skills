@@ -42,10 +42,18 @@ npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-vide
 
 ## Remotion rules to load
 
-Remotionコードを触る前に必ず `remotion-best-practices` スキルの以下を参照：
+Remotion コードを触る前に `remotion-best-practices` のガイドを参照する：
+
 - `animations.md`、`timing.md`、`transitions.md`、`sequencing.md`
 - `text-animations.md`、`parameters.md`、`calculate-metadata.md`
 - `voiceover.md`（ボイスオーバー時のみ）
+
+**どこから読むか（優先順）**
+
+1. **`setup.sh` 完了後（通常）** — プロジェクト直下の `.agents/skills/remotion-best-practices/` に展開された `SKILL.md` および `rules/*.md` を `Read` する（`npx skills` の標準配置）。
+2. **マーカーが無い／オフラインで setup した場合** — [remotion-dev/skills](https://github.com/remotion-dev/skills) のリポジトリ上の該当 `.md`、または [Remotion 公式ドキュメント](https://remotion.dev/docs) を参照する。
+
+`setup.sh` が `remotion-best-practices` を未検出なら `npx skills add remotion-dev/skills --yes` を実行する。手動で先に入れておいてもよい（マーカーがあれば setup はスキップする）。
 
 ## Workflow
 
@@ -128,12 +136,22 @@ fi
 bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
 ```
 
+`setup.sh` は `npm ci` のあと、`<output-dir>/.agents/skills/remotion-best-practices/SKILL.md` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（ネットワーク必須）。
+
 リポジトリをクローンしただけで上記ループがヒットしない場合は、`skills/meeting-to-video/scripts/resolve-skill-dir.sh` を絶対パスで `source` すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
 
 完了後、テンプレートの `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
 
 ```
 Write: <output-dir>/content.json ← Step 2 の JSON
+```
+
+### Step 3b: Remotion 公式スキル（通常は自動）
+
+`setup.sh` 内で処理する。手動で入れ直したい場合のみ:
+
+```bash
+cd <output-dir> && npx skills add remotion-dev/skills --yes
 ```
 
 ### Step 4: ボイスオーバー（ユーザーが要求した場合のみ）
@@ -162,7 +180,7 @@ cd <output-dir> && npx remotion preview
 | エラー | 対応 |
 |---|---|
 | Zodバリデーション失敗 | エラー詳細を確認してJSONを修正、再バリデーション |
-| npm install 失敗 | `node --version` で v18+ を確認 |
-| `npx skills add` 失敗 | リトライ後も失敗する場合はスキップして続行 |
+| `npm ci` 失敗 | `node --version` で v18+ を確認。`package-lock.json` が壊れていないか確認。どうしても通らない場合は `cd <output-dir> && rm -rf node_modules && npm install` で代替（ロックとズレる可能性あり） |
+| `npx skills add remotion-dev/skills` 失敗（setup 内） | ネットワーク・`npx skills` を確認。手動で `cd <output-dir> && npx skills add remotion-dev/skills --yes` を再試行。どうしても不可なら [Remotion 公式ドキュメント](https://remotion.dev/docs) または [remotion-dev/skills](https://github.com/remotion-dev/skills) を参照して続行 |
 | プレビュー起動失敗 | `npx remotion preview --port 3001` でポート変更 |
 | TTS API 失敗 | ボイスオーバーなしで続行（音声はオプション） |

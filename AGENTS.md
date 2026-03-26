@@ -23,6 +23,8 @@ npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-vide
 ## meeting-to-video のメモ
 
 - 手動の `install.sh` は置かない。インストールは `npx skills` のみ。
+- `setup.sh` は `npm ci` のあと、プロジェクトに `remotion-best-practices` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（`.agents/skills/remotion-best-practices/SKILL.md` をマーカーにする）。
+- テンプレの `package.json` の `overrides.loader-utils` は、Remotion の bundler が advisory 済みの `loader-utils` を引かなくなったら削除を検討する。
 - スキルルート解決の単一ソースは `skills/meeting-to-video/scripts/resolve-skill-dir.sh`。Supported Agents のグローバルパス変更時はここと `SKILL.md` の Step 3 ループを同期する。
 
 ## 変更時のチェック

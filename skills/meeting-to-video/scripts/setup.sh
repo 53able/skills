@@ -1,6 +1,7 @@
 #!/bin/bash
 # Usage: bash setup.sh <output-dir>
-# Copies the Remotion template to <output-dir>, installs deps, and adds Remotion skills.
+# Copies the Remotion template to <output-dir>, runs npm ci, then ensures remotion-dev/skills
+# (skill name: remotion-best-practices) is present under .agents/skills/ — runs npx skills add if missing.
 
 set -e
 
@@ -11,23 +12,19 @@ OUTPUT_DIR="${1:?Usage: bash setup.sh <output-dir>}"
 echo "→ Copying template to $OUTPUT_DIR"
 cp -r "$SKILL_DIR/template/" "$OUTPUT_DIR"
 
-echo "→ Installing dependencies"
+echo "→ Installing dependencies (npm ci from lockfile)"
 cd "$OUTPUT_DIR"
 # Remove node_modules copied from template (cp -r dereferences symlinks on macOS,
 # causing broken .bin/ entries). Always do a fresh install.
 rm -rf node_modules
-npm install
+npm ci
 
-echo "→ Installing Remotion official skills (project-scoped)"
-# npx skills は Cursor / Claude Code など複数プラットフォームで利用可能
-# 利用できない環境ではスキップして手動参照で続行する
-if command -v npx &>/dev/null && npx skills add remotion-dev/skills --yes 2>/dev/null; then
-  echo "  Remotion skills installed"
-  # Cursor: .cursor/skills/  Claude Code: rules/ など環境により異なる
-  echo "  Verify: ls .cursor/skills/ 2>/dev/null || ls rules/ 2>/dev/null"
+REMOTION_SKILL_MARK=".agents/skills/remotion-best-practices/SKILL.md"
+if [[ ! -f "$REMOTION_SKILL_MARK" ]]; then
+  echo "→ Installing remotion-dev/skills (remotion-best-practices) — $REMOTION_SKILL_MARK not found"
+  npx skills add remotion-dev/skills --yes
 else
-  echo "  INFO: npx skills add をスキップ。"
-  echo "        Remotion 公式ドキュメントを手動参照: https://remotion.dev/docs"
+  echo "→ remotion-best-practices already present ($REMOTION_SKILL_MARK), skipping npx skills add"
 fi
 
 echo ""
