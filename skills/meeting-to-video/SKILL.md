@@ -120,12 +120,15 @@ for d in \
 done
 
 if [[ -z "${MEETING_TO_VIDEO_SKILL_DIR:-}" ]]; then
-  echo "ERROR: meeting-to-video が見つかりません。npx skills add でインストールするか、クローン先の scripts/resolve-skill-dir.sh を直接 source してください。" >&2
+  echo "ERROR: meeting-to-video が見つかりません。npx skills add でインストールするか、次のようにクローン内の resolve を直接 source してから再実行してください。" >&2
+  echo "  source /絶対パス/skills/meeting-to-video/scripts/resolve-skill-dir.sh" >&2
   exit 1
 fi
 
 bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
 ```
+
+リポジトリをクローンしただけで上記ループがヒットしない場合は、`skills/meeting-to-video/scripts/resolve-skill-dir.sh` を絶対パスで `source` すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
 
 完了後、テンプレートの `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
 
