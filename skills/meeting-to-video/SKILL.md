@@ -34,7 +34,11 @@ npx skills add 53able/skills --list
 
 スキルはシンボリックリンクで各エージェントに展開されるため、リポジトリを更新すれば全プラットフォームに即時反映される。
 
-`npx skills` が使えない環境では `meeting-to-video/install.sh` でフォールバックインストールができる。
+リポジトリ内の単一スキルだけ入れたい場合:
+
+```bash
+npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
+```
 
 ## Remotion rules to load
 
@@ -61,23 +65,66 @@ VideoPropsSchema.parse(generated_json)
 
 ### Step 3: プロジェクトセットアップ
 
-スキルのインストール先を自動解決してから実行する（npx skills でインストールした全エージェントに対応）:
+`scripts/resolve-skill-dir.sh` を source して `MEETING_TO_VIDEO_SKILL_DIR` を確定し、`setup.sh` を実行する。候補パスは [vercel-labs/skills](https://github.com/vercel-labs/skills) の Supported Agents に追従している。
 
 ```bash
-_skill_dir=$(for d in \
-  "$HOME/.claude/skills/meeting-to-video" \
-  "$HOME/.cursor/skills/meeting-to-video" \
-  "$HOME/.codex/skills/meeting-to-video" \
-  "$HOME/.gemini/skills/meeting-to-video" \
-  "$HOME/.codeium/windsurf/skills/meeting-to-video" \
-  "$HOME/.copilot/skills/meeting-to-video" \
-  "$HOME/.config/opencode/skills/meeting-to-video" \
+_rs=""
+for d in \
   "$HOME/.config/agents/skills/meeting-to-video" \
-  "$HOME/.agents/skills/meeting-to-video"; do
-  [ -d "$d/scripts" ] && echo "$d" && break
-done)
+  "$HOME/.gemini/antigravity/skills/meeting-to-video" \
+  "$HOME/.augment/skills/meeting-to-video" \
+  "$HOME/.claude/skills/meeting-to-video" \
+  "$HOME/.openclaw/skills/meeting-to-video" \
+  "$HOME/.agents/skills/meeting-to-video" \
+  "$HOME/.codebuddy/skills/meeting-to-video" \
+  "$HOME/.codex/skills/meeting-to-video" \
+  "$HOME/.commandcode/skills/meeting-to-video" \
+  "$HOME/.continue/skills/meeting-to-video" \
+  "$HOME/.snowflake/cortex/skills/meeting-to-video" \
+  "$HOME/.config/crush/skills/meeting-to-video" \
+  "$HOME/.cursor/skills/meeting-to-video" \
+  "$HOME/.deepagents/agent/skills/meeting-to-video" \
+  "$HOME/.factory/skills/meeting-to-video" \
+  "$HOME/.gemini/skills/meeting-to-video" \
+  "$HOME/.copilot/skills/meeting-to-video" \
+  "$HOME/.config/goose/skills/meeting-to-video" \
+  "$HOME/.junie/skills/meeting-to-video" \
+  "$HOME/.iflow/skills/meeting-to-video" \
+  "$HOME/.kilocode/skills/meeting-to-video" \
+  "$HOME/.kiro/skills/meeting-to-video" \
+  "$HOME/.kode/skills/meeting-to-video" \
+  "$HOME/.mcpjam/skills/meeting-to-video" \
+  "$HOME/.vibe/skills/meeting-to-video" \
+  "$HOME/.mux/skills/meeting-to-video" \
+  "$HOME/.config/opencode/skills/meeting-to-video" \
+  "$HOME/.openhands/skills/meeting-to-video" \
+  "$HOME/.pi/agent/skills/meeting-to-video" \
+  "$HOME/.qoder/skills/meeting-to-video" \
+  "$HOME/.qwen/skills/meeting-to-video" \
+  "$HOME/.roo/skills/meeting-to-video" \
+  "$HOME/.trae/skills/meeting-to-video" \
+  "$HOME/.trae-cn/skills/meeting-to-video" \
+  "$HOME/.codeium/windsurf/skills/meeting-to-video" \
+  "$HOME/.zencoder/skills/meeting-to-video" \
+  "$HOME/.neovate/skills/meeting-to-video" \
+  "$HOME/.pochi/skills/meeting-to-video" \
+  "$HOME/.adal/skills/meeting-to-video" \
+  "$HOME/.windsurf/skills/meeting-to-video" \
+  ".claude/skills/meeting-to-video" \
+  ".agents/skills/meeting-to-video"; do
+  if [[ -f "$d/scripts/resolve-skill-dir.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "$d/scripts/resolve-skill-dir.sh"
+    break
+  fi
+done
 
-bash "$_skill_dir/scripts/setup.sh" <output-dir>
+if [[ -z "${MEETING_TO_VIDEO_SKILL_DIR:-}" ]]; then
+  echo "ERROR: meeting-to-video が見つかりません。npx skills add でインストールするか、クローン先の scripts/resolve-skill-dir.sh を直接 source してください。" >&2
+  exit 1
+fi
+
+bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
 ```
 
 完了後、テンプレートの `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
@@ -89,14 +136,14 @@ Write: <output-dir>/content.json ← Step 2 の JSON
 ### Step 4: ボイスオーバー（ユーザーが要求した場合のみ）
 
 ```bash
-# Step 3 の _skill_dir 変数を使い回す（同一セッションの場合）
-# 別セッションの場合は上記と同じ for ループで再解決する
+# Step 3 で source 済みなら MEETING_TO_VIDEO_SKILL_DIR をそのまま使う
+# 別セッションの場合は Step 3 と同じ for + source で再解決する
 
 # ElevenLabs（デフォルト、引数なし）
-bash "$_skill_dir/scripts/gen-audio.sh" <output-dir>
+bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/gen-audio.sh" <output-dir>
 
 # OpenAI TTS
-bash "$_skill_dir/scripts/gen-audio.sh" <output-dir> --provider openai
+bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/gen-audio.sh" <output-dir> --provider openai
 ```
 
 ### Step 5: プレビュー起動
