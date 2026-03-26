@@ -24,6 +24,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-vide
 
 - 手動の `install.sh` は置かない。インストールは `npx skills` のみ。
 - `setup.sh` は `npm ci` のみ（`package-lock.json` 固定）。Remotion 公式スキルは `SKILL.md` Step 3b で任意実行。
+- テンプレの `package.json` の `overrides.loader-utils` は、Remotion の bundler が advisory 済みの `loader-utils` を引かなくなったら削除を検討する。
 - スキルルート解決の単一ソースは `skills/meeting-to-video/scripts/resolve-skill-dir.sh`。Supported Agents のグローバルパス変更時はここと `SKILL.md` の Step 3 ループを同期する。
 
 ## 変更時のチェック

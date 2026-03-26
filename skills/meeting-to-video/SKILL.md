@@ -42,10 +42,18 @@ npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-vide
 
 ## Remotion rules to load
 
-Remotionコードを触る前に必ず `remotion-best-practices` スキルの以下を参照：
+Remotion コードを触る前に `remotion-best-practices` のガイドを参照する：
+
 - `animations.md`、`timing.md`、`transitions.md`、`sequencing.md`
 - `text-animations.md`、`parameters.md`、`calculate-metadata.md`
 - `voiceover.md`（ボイスオーバー時のみ）
+
+**どこから読むか（優先順）**
+
+1. **Step 3b を実行済み** — プロジェクト配下（例: `.cursor/skills/` や `rules/`、環境により異なる）に展開された同名ファイルを `Read` する。
+2. **未実行** — [remotion-dev/skills](https://github.com/remotion-dev/skills) のリポジトリ上の該当 `.md`、または [Remotion 公式ドキュメント](https://remotion.dev/docs) を参照する。
+
+Step 3b は任意だが、エージェントがローカルで一括参照するなら、Step 3 の直後・`content.json` 上書きの前後いずれでも実行してよい。
 
 ## Workflow
 
@@ -138,13 +146,13 @@ Write: <output-dir>/content.json ← Step 2 の JSON
 
 ### Step 3b（任意）: Remotion 公式スキル
 
-`remotion-best-practices` などをプロジェクトに取り込む場合のみ実行する。`setup.sh` では実行しない（ロックファイルに基づく `npm ci` のみにし、セットアップ中に別リポジトリのスキルを `npx` で取り込まない）。
+`remotion-best-practices` などを**プロジェクトに取り込む場合のみ**実行する。`setup.sh` では実行しない（`npm ci` とロックファイルだけにし、セットアップ中に別リポジトリのスキルを `npx` で取り込まない）。
 
 ```bash
 cd <output-dir> && npx skills add remotion-dev/skills --yes
 ```
 
-失敗しても Remotion 公式ドキュメントを手動参照すれば続行できる: https://remotion.dev/docs
+失敗しても [Remotion 公式ドキュメント](https://remotion.dev/docs) または GitHub 上の [remotion-dev/skills](https://github.com/remotion-dev/skills) で続行できる（上記「Remotion rules to load」参照）。
 
 ### Step 4: ボイスオーバー（ユーザーが要求した場合のみ）
 
