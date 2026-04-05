@@ -11,6 +11,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **thinking-ensemble** — 16の MBTI 認知レンズを NT / NF / SJ / SP の4グループに分け、全グループを並列サブエージェントとして同時起動。タスク重みづけ統合で認知的多様性を最大化する。
 
+## 読みやすさ・XAI（多エージェント）
+
+ソース忠実性と読みやすさを反復改善するハーネス（プラグイン同梱）。
+
+- **readability-xai-harness-plugin** — Cursor / Claude プラグイン形式（`skills/readability-xai-harness-plugin/`）。同梱スキル: `readability-xai-orchestrator`, `readability-narrator`, `faithful-evaluator-text`, `faithful-critic-text`, `coherence-agent-text`（QA はエージェント定義のみ `agents/readability-qa.md`）。
+
 ## 動画生成
 
 ミーティングや議事録からエクスプレイナービデオを自動生成するスキル。
@@ -38,6 +44,7 @@ npx skills add 53able/skills --skill meeting-to-video -g -a cursor
 
 ```bash
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
+npx skills add https://github.com/53able/skills/tree/main/skills/readability-xai-harness-plugin/skills/readability-xai-orchestrator -g
 ```
 
 ## スキル構成
