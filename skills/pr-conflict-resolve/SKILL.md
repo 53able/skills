@@ -50,9 +50,12 @@ description: ローカルCLI（git / gh）を使ってGitHub PRのコンフリ�
    ```zsh
    git add <解決したファイル名>
    ```
-6. コミット前にマーカーの残留がないことを検証する。スキル同梱の `scripts/check-markers.sh` を実行する。なければ `rg` で代替する:
+6. コミット前にマーカーの残留がないことを検証する。スキル同梱の `scripts/check_markers.py` を実行する。なければ `rg` で代替する:
    ```zsh
-   # rg が使える場合（推奨）
+   # スキル同梱スクリプト（推奨）
+   python scripts/check_markers.py
+
+   # rg が使える場合（代替）
    git diff --cached --name-only | xargs rg -l '<<<<<<<|=======|>>>>>>>' 2>/dev/null \
      && echo "マーカー残留あり — コミット前に解消すること" \
      || echo "OK: マーカーなし"
@@ -105,7 +108,7 @@ gh pr checks || true
 ```
 
 ## エラーハンドリング
-- マーカー残留チェック（`rg` またはスキル同梱の `scripts/check-markers.sh`）がマーカーを報告した場合は、対象ファイルを再度開いてマーカーを削除してからコミットする。
+- マーカー残留チェック（`rg` またはスキル同梱の `scripts/check_markers.py`）がマーカーを報告した場合は、対象ファイルを再度開いてマーカーを削除してからコミットする。
 - マージまたはリベースを完全に中断したい場合:
   ```zsh
   git merge --abort
