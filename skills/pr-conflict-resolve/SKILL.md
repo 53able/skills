@@ -23,7 +23,7 @@ description: ローカルCLI（git / gh）を使ってGitHub PRのコンフリ�
    ```
 
 **Step 2: 戦略選択**
-1. 作業前にチームの同期戦略を確認する。merge と rebase のトレードオフ比較マトリクスは `references/strategy-guide.md` を読む。
+1. 作業前にチームの同期戦略を確認する。merge と rebase のトレードオフ比較マトリクスはスキル同梱の `references/strategy-guide.md` を読む。
 2. 選択した戦略を実行する:
    - **Merge（デフォルト — 共有ブランチに安全）:**
      ```zsh
@@ -50,7 +50,13 @@ description: ローカルCLI（git / gh）を使ってGitHub PRのコンフリ�
    ```zsh
    git add <解決したファイル名>
    ```
-6. コミット前に `scripts/check-markers.sh` を実行してマーカーの残留がないことを検証する。
+6. コミット前にマーカーの残留がないことを検証する。スキル同梱の `scripts/check-markers.sh` を実行する。なければ `rg` で代替する:
+   ```zsh
+   # rg が使える場合（推奨）
+   git diff --cached --name-only | xargs rg -l '<<<<<<<|=======|>>>>>>>' 2>/dev/null \
+     && echo "マーカー残留あり — コミット前に解消すること" \
+     || echo "OK: マーカーなし"
+   ```
 
 **Step 4: コミットとプッシュ**
 1. Merge 戦略の場合 — マージコミットを作成する:
@@ -73,10 +79,11 @@ description: ローカルCLI（git / gh）を使ってGitHub PRのコンフリ�
    ```
 2. UI上の "Resolve conflicts" 警告が消え、"Merge pull request" が有効になっていることを確認する。
 3. "Files changed" タブを開き、意図しない空白や書式の差分が混入していないかを確認する。
-4. ステータスチェック（CI/CD・lint）がすべてパスしていることを確認する:
+4. ステータスチェック（CI/CD・lint）の状況を確認する:
    ```zsh
-   gh pr checks
+   gh pr checks || true
    ```
+   **注意:** checks が1件も登録されていないリポジトリでは `gh pr checks` が exit 1 を返すが、これはエラーではない。出力に "no checks reported" や空行のみが表示される場合は CI 未設定と判断し、次のステップへ進む。実際に失敗している場合は failing/errored のチェック名が明示される。
 5. CIが一時的なエラーで失敗した場合は、GitHub UI の再実行ボタンから手動再トリガーする。
 6. 非自明なロジック変更を伴う解消をした場合は、Conversation タブに調整内容のコメントを残す。
 7. 既存のインラインレビューコメントと、今回の解消内容が矛盾していないかを確認する。
@@ -93,12 +100,12 @@ git status
 # 直近のコミットが正しく積まれているか確認
 git log --oneline -n 3
 
-# CLIからCIチェック状況を確認
-gh pr checks
+# CLIからCIチェック状況を確認（checks 未登録でも exit 1 になるため || true で継続）
+gh pr checks || true
 ```
 
 ## エラーハンドリング
-- `scripts/check-markers.sh` がマーカー残留を報告した場合は、対象ファイルを再度開いてマーカーを削除してからコミットする。
+- マーカー残留チェック（`rg` またはスキル同梱の `scripts/check-markers.sh`）がマーカーを報告した場合は、対象ファイルを再度開いてマーカーを削除してからコミットする。
 - マージまたはリベースを完全に中断したい場合:
   ```zsh
   git merge --abort
@@ -116,4 +123,4 @@ gh pr checks
   git reset --hard HEAD@{n}
   ```
 - `.orig` などの一時ファイルを誤ってステージした場合は `git restore --staged <ファイル名>` でアンステージし、`.gitignore` に追加する。
-- 典型的なコンフリクトパターンの詳細と復旧手順は `references/conflict-patterns.md` を読む。
+- 典型的なコンフリクトパターンの詳細と復旧手順はスキル同梱の `references/conflict-patterns.md` を読む。
