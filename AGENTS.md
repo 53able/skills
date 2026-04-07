@@ -27,6 +27,12 @@ npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-vide
 - テンプレの `package.json` の `overrides.loader-utils` は、Remotion の bundler が advisory 済みの `loader-utils` を引かなくなったら削除を検討する。
 - スキルルート解決の単一ソースは `skills/meeting-to-video/scripts/resolve_skill_dir.py`。Supported Agents のグローバルパス変更時はここと `SKILL.md` の Step 3 ループを同期する。
 
+## スキル記述規則
+
+- スキルフォルダに同梱されているファイル（スクリプト・テンプレート・リファレンスなど）を prose で言及する場合は、念のために **`スキル同梱の`** を前置きする。
+  - 例: `スキル同梱の \`scripts/check_granularity.py\` を実行する`
+  - コードブロック内のコマンドには不要。prose の説明文でのみ付ける。
+
 ## 変更時のチェック
 
 - `README.md` のパス例がリポジトリ構造と一致しているか。

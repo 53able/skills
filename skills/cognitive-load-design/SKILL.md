@@ -25,7 +25,7 @@ description: コード設計における認知負荷を最適化する実践的�
 
 ### Step 2: 定量シグナルを収集する（A・C の場合）
 
-スクリプトを実行して認知負荷の高いコード箇所を洗い出す:
+スキル同梱の `scripts/check_load.py` を実行して認知負荷の高いコード箇所を洗い出す:
 
 ```bash
 python3 scripts/check_load.py [対象ディレクトリ]

@@ -51,10 +51,10 @@ Remotion コードを触る前に `remotion-best-practices` のガイドを参�
 
 **どこから読むか（優先順）**
 
-1. **`setup.sh` 完了後（通常）** — プロジェクト直下の `.agents/skills/remotion-best-practices/` に展開された `SKILL.md` および `rules/*.md` を `Read` する（`npx skills` の標準配置）。
+1. **スキル同梱の `setup.sh` 完了後（通常）** — プロジェクト直下の `.agents/skills/remotion-best-practices/` に展開された `SKILL.md` および `rules/*.md` を `Read` する（`npx skills` の標準配置）。
 2. **マーカーが無い／オフラインで setup した場合** — [remotion-dev/skills](https://github.com/remotion-dev/skills) のリポジトリ上の該当 `.md`、または [Remotion 公式ドキュメント](https://remotion.dev/docs) を参照する。
 
-`setup.sh` が `remotion-best-practices` を未検出なら `npx skills add remotion-dev/skills --yes` を実行する。手動で先に入れておいてもよい（マーカーがあれば setup はスキップする）。
+スキル同梱の `setup.sh` が `remotion-best-practices` を未検出なら `npx skills add remotion-dev/skills --yes` を実行する。手動で先に入れておいてもよい（マーカーがあれば setup はスキップする）。
 
 ## Workflow
 
@@ -64,7 +64,7 @@ Remotion コードを触る前に `remotion-best-practices` のガイドを参�
 
 ### Step 2: VideoProps JSON 生成
 
-`prompts/extract.md` のプロンプトに従いトランスクリプトを分析し、`VideoPropsSchema` 準拠の JSON を生成する。生成後にバリデーション:
+スキル同梱の `prompts/extract.md` のプロンプトに従いトランスクリプトを分析し、`VideoPropsSchema` 準拠の JSON を生成する。生成後にバリデーション:
 
 ```
 VideoPropsSchema.parse(generated_json)
@@ -74,7 +74,7 @@ VideoPropsSchema.parse(generated_json)
 
 ### Step 3: プロジェクトセットアップ
 
-`scripts/resolve_skill_dir.py` で `MEETING_TO_VIDEO_SKILL_DIR` を確定し、`setup.py` を実行する。候補パスは [vercel-labs/skills](https://github.com/vercel-labs/skills) の Supported Agents に追従している。
+スキル同梱の `scripts/resolve_skill_dir.py` で `MEETING_TO_VIDEO_SKILL_DIR` を確定し、スキル同梱の `setup.py` を実行する。候補パスは [vercel-labs/skills](https://github.com/vercel-labs/skills) の Supported Agents に追従している。
 
 ```bash
 _rs=""
@@ -136,11 +136,11 @@ fi
 python3 "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.py" <output-dir>
 ```
 
-`setup.py` は `npm ci` のあと、`<output-dir>/.agents/skills/remotion-best-practices/SKILL.md` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（ネットワーク必須）。
+スキル同梱の `setup.py` は `npm ci` のあと、`<output-dir>/.agents/skills/remotion-best-practices/SKILL.md` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（ネットワーク必須）。
 
-リポジトリをクローンしただけで上記ループがヒットしない場合は、`skills/meeting-to-video/scripts/resolve_skill_dir.py` を絶対パスで直接実行すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
+リポジトリをクローンしただけで上記ループがヒットしない場合は、スキル同梱の `scripts/resolve_skill_dir.py` を絶対パスで直接実行すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
 
-完了後、テンプレートの `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
+完了後、スキル同梱の `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
 
 ```
 Write: <output-dir>/content.json ← Step 2 の JSON
@@ -148,7 +148,7 @@ Write: <output-dir>/content.json ← Step 2 の JSON
 
 ### Step 3b: Remotion 公式スキル（通常は自動）
 
-`setup.sh` 内で処理する。手動で入れ直したい場合のみ:
+スキル同梱の `setup.sh` 内で処理する。手動で入れ直したい場合のみ:
 
 ```bash
 cd <output-dir> && npx skills add remotion-dev/skills --yes

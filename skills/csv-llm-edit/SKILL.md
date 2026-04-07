@@ -74,7 +74,7 @@ In `--append` mode: `rows = []` (new rows to produce); `existing_rows` holds the
 
 **Step 2A-4: Transform, filter, or delete rows** (Update / Delete)
 
-Read `references/edit-patterns.md` to find the matching pattern (Update by key, Delete by key, Insert at position, etc.).
+スキル同梱の `references/edit-patterns.md` を読み、一致するパターン（Update by key, Delete by key, Insert at position など）を探す。
 
 ```bash
 python scripts/edit_csv.py <input.csv> <output.csv> --script "<python_code>"
@@ -113,7 +113,7 @@ Capture the stdout output (the TOON block).
 
 **Step 2B-2: Build the LLM Prompt**
 
-Read `assets/llm-prompt-template.md` and substitute:
+スキル同梱の `assets/llm-prompt-template.md` を読み、以下を代入する:
 - `{toon_block}` — the TOON output captured above
 - `{task}` — the edit instruction in natural language
 
