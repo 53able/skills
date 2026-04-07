@@ -93,6 +93,6 @@ description: Gitコミットの粒度（サイズ・単位）ベストプラク�
 
 ## エラーハンドリング
 - `git add -p` でハンク分割後にビルドが壊れる場合は、セマンティックギャップが発生している。削除と追加が分離されていないかスキル同梱の `references/granularity-rules.md` を再確認する。
-- コミット単位の判断が難しい場合はスキル同梱の `scripts/check-granularity.sh` を実行して差分の概要を得る。
+- コミット単位の判断が難しい場合はスキル同梱の `scripts/check_granularity.py` を実行して差分の概要を得る。
 - `git rebase -i` で競合が発生した場合は `git rebase --abort` で中断し、安全な状態へ戻す。
 - Conventional Commits の type 選択が迷う場合はスキル同梱の `references/granularity-rules.md` の判定フローを参照する。
