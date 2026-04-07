@@ -11,7 +11,8 @@ description: "ミーティングのトランスクリプト（プレーンテキ
 
 ## Prerequisites
 
-- Node.js v18+、npm v9+
+- Python 3.8+
+- Node.js v18+、npm v9+（Remotion プロジェクトの依存関係インストールに使用）
 - `npx skills` CLI（任意。Cursor / Claude Code 環境で自動インストールを試みる）
 - ボイスオーバーを使う場合: `ELEVENLABS_API_KEY`（デフォルト）または `OPENAI_API_KEY`
 
@@ -73,7 +74,7 @@ VideoPropsSchema.parse(generated_json)
 
 ### Step 3: プロジェクトセットアップ
 
-`scripts/resolve-skill-dir.sh` を source して `MEETING_TO_VIDEO_SKILL_DIR` を確定し、`setup.sh` を実行する。候補パスは [vercel-labs/skills](https://github.com/vercel-labs/skills) の Supported Agents に追従している。
+`scripts/resolve_skill_dir.py` で `MEETING_TO_VIDEO_SKILL_DIR` を確定し、`setup.py` を実行する。候補パスは [vercel-labs/skills](https://github.com/vercel-labs/skills) の Supported Agents に追従している。
 
 ```bash
 _rs=""
@@ -120,25 +121,24 @@ for d in \
   "$HOME/.windsurf/skills/meeting-to-video" \
   ".claude/skills/meeting-to-video" \
   ".agents/skills/meeting-to-video"; do
-  if [[ -f "$d/scripts/resolve-skill-dir.sh" ]]; then
-    # shellcheck source=/dev/null
-    source "$d/scripts/resolve-skill-dir.sh"
+  if [[ -f "$d/scripts/resolve_skill_dir.py" ]]; then
+    MEETING_TO_VIDEO_SKILL_DIR=$(python3 "$d/scripts/resolve_skill_dir.py")
     break
   fi
 done
 
 if [[ -z "${MEETING_TO_VIDEO_SKILL_DIR:-}" ]]; then
-  echo "ERROR: meeting-to-video が見つかりません。npx skills add でインストールするか、次のようにクローン内の resolve を直接 source してから再実行してください。" >&2
-  echo "  source /絶対パス/skills/meeting-to-video/scripts/resolve-skill-dir.sh" >&2
+  echo "ERROR: meeting-to-video が見つかりません。npx skills add でインストールするか、次のようにクローン内の resolve を直接実行してから再実行してください。" >&2
+  echo "  MEETING_TO_VIDEO_SKILL_DIR=\$(python3 /絶対パス/skills/meeting-to-video/scripts/resolve_skill_dir.py)" >&2
   exit 1
 fi
 
-bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.sh" <output-dir>
+python3 "$MEETING_TO_VIDEO_SKILL_DIR/scripts/setup.py" <output-dir>
 ```
 
-`setup.sh` は `npm ci` のあと、`<output-dir>/.agents/skills/remotion-best-practices/SKILL.md` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（ネットワーク必須）。
+`setup.py` は `npm ci` のあと、`<output-dir>/.agents/skills/remotion-best-practices/SKILL.md` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（ネットワーク必須）。
 
-リポジトリをクローンしただけで上記ループがヒットしない場合は、`skills/meeting-to-video/scripts/resolve-skill-dir.sh` を絶対パスで `source` すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
+リポジトリをクローンしただけで上記ループがヒットしない場合は、`skills/meeting-to-video/scripts/resolve_skill_dir.py` を絶対パスで直接実行すればよい（スクリプト末尾の候補がそのクローンをスキルルートとして採用する）。
 
 完了後、テンプレートの `content.json`（サンプルデータ）を Step 2 の JSON で**上書き**:
 
@@ -157,14 +157,14 @@ cd <output-dir> && npx skills add remotion-dev/skills --yes
 ### Step 4: ボイスオーバー（ユーザーが要求した場合のみ）
 
 ```bash
-# Step 3 で source 済みなら MEETING_TO_VIDEO_SKILL_DIR をそのまま使う
-# 別セッションの場合は Step 3 と同じ for + source で再解決する
+# Step 3 で MEETING_TO_VIDEO_SKILL_DIR が設定済みならそのまま使う
+# 別セッションの場合は Step 3 と同じ for ループで再解決する
 
 # ElevenLabs（デフォルト、引数なし）
-bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/gen-audio.sh" <output-dir>
+python3 "$MEETING_TO_VIDEO_SKILL_DIR/scripts/gen_audio.py" <output-dir>
 
 # OpenAI TTS
-bash "$MEETING_TO_VIDEO_SKILL_DIR/scripts/gen-audio.sh" <output-dir> --provider openai
+python3 "$MEETING_TO_VIDEO_SKILL_DIR/scripts/gen_audio.py" <output-dir> --provider openai
 ```
 
 ### Step 5: プレビュー起動
@@ -180,7 +180,7 @@ cd <output-dir> && npx remotion preview
 | エラー | 対応 |
 |---|---|
 | Zodバリデーション失敗 | エラー詳細を確認してJSONを修正、再バリデーション |
-| `npm ci` 失敗 | `node --version` で v18+ を確認。`package-lock.json` が壊れていないか確認。どうしても通らない場合は `cd <output-dir> && rm -rf node_modules && npm install` で代替（ロックとズレる可能性あり） |
+| `npm ci` 失敗 | `node --version` で v18+ を確認。`python3 --version` で 3.8+ を確認。`package-lock.json` が壊れていないか確認。どうしても通らない場合は `cd <output-dir> && rm -rf node_modules && npm install` で代替（ロックとズレる可能性あり） |
 | `npx skills add remotion-dev/skills` 失敗（setup 内） | ネットワーク・`npx skills` を確認。手動で `cd <output-dir> && npx skills add remotion-dev/skills --yes` を再試行。どうしても不可なら [Remotion 公式ドキュメント](https://remotion.dev/docs) または [remotion-dev/skills](https://github.com/remotion-dev/skills) を参照して続行 |
 | プレビュー起動失敗 | `npx remotion preview --port 3001` でポート変更 |
 | TTS API 失敗 | ボイスオーバーなしで続行（音声はオプション） |
