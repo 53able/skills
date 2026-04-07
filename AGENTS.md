@@ -23,11 +23,17 @@ npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-vide
 ## meeting-to-video のメモ
 
 - 手動の `install.sh` は置かない。インストールは `npx skills` のみ。
-- `setup.sh` は `npm ci` のあと、プロジェクトに `remotion-best-practices` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（`.agents/skills/remotion-best-practices/SKILL.md` をマーカーにする）。
+- `setup.py` は `npm ci` のあと、プロジェクトに `remotion-best-practices` が無ければ `npx skills add remotion-dev/skills --yes` を実行する（`.agents/skills/remotion-best-practices/SKILL.md` をマーカーにする）。
 - テンプレの `package.json` の `overrides.loader-utils` は、Remotion の bundler が advisory 済みの `loader-utils` を引かなくなったら削除を検討する。
-- スキルルート解決の単一ソースは `skills/meeting-to-video/scripts/resolve-skill-dir.sh`。Supported Agents のグローバルパス変更時はここと `SKILL.md` の Step 3 ループを同期する。
+- スキルルート解決の単一ソースは `skills/meeting-to-video/scripts/resolve_skill_dir.py`。Supported Agents のグローバルパス変更時はここと `SKILL.md` の Step 3 ループを同期する。
+
+## スキル記述規則
+
+- スキルフォルダに同梱されているファイル（スクリプト・テンプレート・リファレンスなど）を prose で言及する場合は、念のために **`スキル同梱の`** を前置きする。
+  - 例: `スキル同梱の \`scripts/check_granularity.py\` を実行する`
+  - コードブロック内のコマンドには不要。prose の説明文でのみ付ける。
 
 ## 変更時のチェック
 
 - `README.md` のパス例がリポジトリ構造と一致しているか。
-- `meeting-to-video` のワークフローで `setup.sh` / `gen-audio.sh` が `MEETING_TO_VIDEO_SKILL_DIR` または `resolve-skill-dir.sh` 経由で動くか。
+- `meeting-to-video` のワークフローで `setup.py` / `gen_audio.py` が `MEETING_TO_VIDEO_SKILL_DIR` または `resolve_skill_dir.py` 経由で動くか。
