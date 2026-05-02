@@ -1,27 +1,27 @@
-# Cognitive Load Review
+# 認知負荷レビュー
 
-## Load Source
+## 負荷の源
 
-Category: `<control-flow | abstraction | coupling | protocol-mapping | framework-language | onboarding>`
+カテゴリ: `<control-flow | abstraction | coupling | protocol-mapping | framework-language | onboarding>`
 
-Finding:
-`<specific code, design choice, or workflow that adds avoidable mental overhead>`
+指摘:
+`<避けられる認知負荷を増やしている具体的なコード・設計・ワークフロー>`
 
-Evidence:
-`<file path, change path, stack trace depth, number of touched modules, or onboarding/debugging observation>`
+根拠:
+`<ファイルパス、変更経路、スタックの深さ、触るモジュール数、オンボーディング／デバッグでの観察など>`
 
-## Replacement
+## 置き換え
 
-Suggested change:
-`<smallest change that lowers total mental overhead>`
+提案する変更:
+`<認知負荷の総量を下げる最小の変更>`
 
-Why this lowers load:
-`<explain fewer facts to remember, fewer jumps, simpler interface, or clearer domain meaning>`
+負荷が下がる理由:
+`<覚える事実が減る／ジャンプが減る／インターフェースが単純になる／ドメインの意味が明確になる、など>`
 
-## Verification
+## 検証
 
-Behavior check:
-`<test command, focused test, or manual verification>`
+振る舞いの確認:
+`<テストコマンド、絞ったテスト、手動確認>`
 
-Risk:
-`<public API, migration, team convention, or hidden coupling risk>`
+リスク:
+`<公開API、移行、チーム慣習、隠れた結合などのリスク>`

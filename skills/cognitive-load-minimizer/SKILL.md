@@ -1,61 +1,61 @@
 ---
 name: cognitive-load-minimizer
-description: Reduces extraneous cognitive load in code reviews, refactors, architecture decisions, and feature implementation by identifying avoidable mental overhead, shallow abstractions, clever conditionals, premature layers, framework coupling, and misleading domain models. Use when simplifying code, reviewing design, onboarding contributors, or evaluating maintainability. Do not use for performance tuning, UI copy editing, or domain complexity that cannot be reduced.
+description: コードレビュー・リファクタ・アーキ判断・機能実装において、避けられる認知負荷（不要な頭の負担、浅い抽象、技巧的条件分岐、早すぎるレイヤー化、フレームワーク密結合、誤解を招くドメインモデル）を特定して削る。設計の単純化、レビュー、オンボーディング、保守性評価に使う。パフォーマンス調整、UIコピー編集、削れないドメイン複雑性には使わない。
 ---
 
-# Cognitive Load Minimizer
+# 認知負荷ミニマイザー
 
-Reduce avoidable mental overhead in software. Preserve intrinsic domain complexity; remove presentation, structure, and architecture choices that force future contributors to rebuild unnecessary mental models.
+ソフトウェアから「避けられる」認知負荷を減らす。ドメイン由来の本質的複雑さは残し、将来の貢献者に不要なメンタルモデルの再構築を強いる表現・構造・アーキの選択だけを取り除く。
 
-## Procedures
+## 手順
 
-**Step 1: Establish The Task Boundary**
-1. Identify the change type: code review, refactor, feature implementation, architecture decision, or onboarding improvement.
-2. Name the reader persona: new contributor, adjacent team member, future maintainer, QA engineer, or current feature owner.
-3. Separate intrinsic complexity from extraneous complexity:
-   - Intrinsic: domain rules, correctness requirements, real scalability constraints, data model facts.
-   - Extraneous: clever expression, needless indirection, shallow decomposition, custom mappings, framework magic, subjective architecture vocabulary.
-4. If the confusion comes from missing domain knowledge rather than code structure, document the domain fact instead of reshaping the code.
+**ステップ1: タスク境界を決める**
+1. 変更の種類を特定する: コードレビュー、リファクタ、機能実装、アーキ判断、オンボーディング改善のいずれか。
+2. 読み手のペルソナを決める: 新規コントリビュータ、隣チーム、将来の保守担当、QA、現機能オーナーなど。
+3. 本質的複雑さと余計な複雑さを分ける:
+   - 本質的: ドメインルール、正しさの要件、現実のスケール制約、データモデルの事実。
+   - 余計な: 技巧表現、不要な間接化、浅い分割、独自マッピング、フレームワークの魔法、主観的なアーキ用語。
+4. 混乱の原因がコード構造ではなくドメイン知識不足なら、コードをいじる前にドメインの事実を文書化する。
 
-**Step 2: Scan For Load Sources**
-1. Read `references/antipatterns.md` when the task involves architectural or refactoring judgement.
-2. Run `python scripts/score-cognitive-load.py --path <file-or-directory>` when a quick heuristic scan of code text is useful.
-3. Treat script output as a triage aid only. Verify every finding by reading the surrounding code.
-4. Mark each finding with one category:
-   - Control flow load
-   - Abstraction load
-   - Coupling load
-   - Protocol or mapping load
-   - Framework or language load
-   - Onboarding load
+**ステップ2: 負荷の発生源をスキャンする**
+1. アーキやリファクタの判断が絡むときは `references/antipatterns.md` を読む。
+2. コードテキストを素早く当たりを付けたいときは `python scripts/score-cognitive-load.py --path <ファイルまたはディレクトリ>` を実行する。
+3. スクリプトの出力はトリアージ用のみ。指摘ごとに周辺コードを読んで検証する。
+4. 各指摘にカテゴリを1つ付ける:
+   - 制御フロー負荷
+   - 抽象化負荷
+   - 結合負荷
+   - プロトコル／マッピング負荷
+   - フレームワーク／言語負荷
+   - オンボーディング負荷
 
-**Step 3: Prefer Low-Load Transformations**
-1. Replace complex conditionals with named intermediate facts.
-2. Replace nested happy paths with guard clauses when that preserves behavior and local style.
-3. Prefer composition and explicit collaboration over inheritance chains that require reading parent classes before editing.
-4. Merge or inline shallow modules when their interface is harder to understand than their implementation.
-5. Delay abstractions until a stable variation point exists. Keep small duplication when removing it would couple unrelated concepts.
-6. Keep core business logic independent from framework entry points. Use framework objects at the edges.
-7. Use self-describing domain codes instead of forcing contributors to remember numeric or transport-level mappings.
-8. Add architecture layers only when they hide real complexity or protect a practical extension point.
-9. Keep DDD, Clean Architecture, and pattern names subordinate to the actual domain language and change paths.
+**ステップ3: 低負荷の変形を優先する**
+1. 複雑な条件式は、名前のついた中間事実に置き換える。
+2. ネストしたハッピーパスは、振る舞いとローカルなスタイルが保てるならガード節にする。
+3. 親クラスを読まないと編集できない継承チェーンより、合成と明示的な協調を優先する。
+4. インターフェースが実装より難しい浅いモジュールは、統合するかインライン化する。
+5. 変化点が安定するまでは抽象を遅らせる。無関係な概念を結びつけるくらいなら小さな重複は残す。
+6. 核となる業務ロジックはフレームワークのエントリポイントから独立させる。フレームワークオブジェクトは外側に寄せる。
+7. 数値やトランスポート層の対応表を暗記させず、自己説明的なドメインコードを使う。
+8. レイヤーは、本当に複雑さを隠すか、実用的な拡張点を守るときだけ足す。
+9. DDD、クリーンアーキ、パターン名は、実際のドメイン言語と変更パスに従属させる。
 
-**Step 4: Validate The Simplification**
-1. Read `references/checklist.md` and evaluate the candidate change.
-2. Confirm behavior preservation with existing tests, focused new tests, or an explicit manual verification plan.
-3. Check whether the new structure reduces required jumps across files, stacks, services, or mental mappings.
-4. Check whether a new contributor can identify the main path before reading edge cases.
-5. Reject simplifications that only move complexity somewhere else.
+**ステップ4: 単純化を検証する**
+1. `references/checklist.md` で候補変更を評価する。
+2. 既存テスト、絞った新規テスト、または明示的な手動確認計画で振る舞いの保持を確認する。
+3. ファイル・スタック・サービス・頭の中の対応表をまたぐジャンプが減ったか確認する。
+4. 新規参加者がエッジケースを読む前に主経路を把握できるか確認する。
+5. 複雑さを別の場所に押し出しただけの「単純化」は却下する。
 
-**Step 5: Report Findings**
-1. Use `assets/review-template.md` for review comments or design notes.
-2. Lead with the specific cognitive load source, then state the smaller replacement.
-3. Avoid taste-based language. Ground each recommendation in changed files, runtime behavior, onboarding cost, or debugging path length.
-4. If no low-risk reduction exists, say that the complexity appears intrinsic and name the evidence.
+**ステップ5: 結果を報告する**
+1. レビューコメントや設計メモには `assets/review-template.md` を使う。
+2. まず具体的な認知負荷の源、次にそれより負荷の小さい置き換えを書く。
+3. 好みの話は避け、変更ファイル、実行時振る舞い、オンボーディングコスト、デバッグの深さなど観測可能な根拠に寄せる。
+4. リスクの低い削減が無い場合は、複雑さは本質的と見え、その根拠を明示する。
 
-## Error Handling
+## エラー処理
 
-* If the heuristic script reports many low-confidence findings, narrow the scan to the files touched by the task.
-* If a proposed simplification changes public behavior, stop and require tests or explicit product approval.
-* If local project conventions conflict with this skill, preserve shipped public interfaces and reduce load inside the nearest safe boundary.
-* If an abstraction looks shallow but is part of a stable public API, prefer documentation or examples over removal.
+* ヒューリスティックで低信頼の指摘が多いときは、タスクで触ったファイルにスキャンを絞る。
+* 提案した単純化が公開挙動を変えるなら止め、テストまたはプロダクト承認を要請する。
+* ローカルなプロジェクト慣習とこのスキルが衝突するなら、公開インターフェースは維持し、安全な境界の内側で負荷を減らす。
+* 抽象が浅く見えても安定した公開APIの一部なら、削除よりドキュメントや例を優先する。

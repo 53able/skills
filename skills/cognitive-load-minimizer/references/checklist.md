@@ -1,45 +1,45 @@
-# Cognitive Load Review Checklist
+# 認知負荷レビュー・チェックリスト
 
-Use this checklist before recommending or accepting a cognitive-load reduction.
+認知負荷の削減を推奨または受け入れる前に使う。
 
-## Task Fit
+## タスク適合
 
-- [ ] The task boundary is clear.
-- [ ] The affected reader persona is named.
-- [ ] Intrinsic domain complexity is not being disguised as removable complexity.
-- [ ] Existing project style and public contracts are preserved unless the task explicitly changes them.
+- [ ] タスク境界が明確である。
+- [ ] 影響を受ける読み手のペルソナが決まっている。
+- [ ] 本質的なドメイン複雑さを「取り除ける複雑さ」にすり替えていない。
+- [ ] タスクで明示されない限り、既存のプロジェクトスタイルと公開契約を維持している。
 
-## Control Flow
+## 制御フロー
 
-- [ ] Complex conditions use named intermediate facts or small predicates.
-- [ ] Guard clauses remove nesting where behavior remains obvious.
-- [ ] The happy path is visible without retaining several preconditions in memory.
-- [ ] Error paths do not obscure the main path.
+- [ ] 複雑な条件には名前のついた中間事実か小さな述語がある。
+- [ ] ガード節で動きが分かりやすいところではネストを減らしている。
+- [ ] ハッピーパスが、複数の前提を頭に保持しなくても追える。
+- [ ] エラー経路が主経路を覆い隠していない。
 
-## Module Shape
+## モジュールの形
 
-- [ ] Modules hide meaningful complexity behind simple interfaces.
-- [ ] Shallow wrappers, pass-through helpers, and tiny ceremony files are justified.
-- [ ] Important crux logic is findable.
-- [ ] Related behavior is not scattered across many files solely to satisfy line-count rules.
+- [ ] モジュールは意味のある複雑さを単純なインターフェースの後ろに隠している。
+- [ ] 浅いラッパー、パススルー、儀式だけの小ファイルには理由がある。
+- [ ] 核となるロジックが見つけられる。
+- [ ] 行数ルールのためだけに関連振る舞いが大量のファイルに散らばっていない。
 
-## Coupling
+## 結合
 
-- [ ] Shared abstractions represent stable sameness, not temporary resemblance.
-- [ ] Duplication is removed only when removal lowers total change cost.
-- [ ] Framework details stay outside core business logic where practical.
-- [ ] Service boundaries match deployment, scaling, ownership, or failure isolation needs.
+- [ ] 共有抽象は一時的な似ているだけではなく、安定した「同じさ」を表している。
+- [ ] 重複の削除は、削除によって変更コスト全体が下がるときだけ行う。
+- [ ] 可能な限りフレームワークの細部はコア業務ロジックの外に置く。
+- [ ] サービス境界はデプロイ、スケール、オーナーシップ、障害分離の実需要に合っている。
 
-## Protocols And Names
+## プロトコルと名前
 
-- [ ] Domain outcomes use self-describing names.
-- [ ] Numeric transport codes are not overloaded with product-specific meaning.
-- [ ] Custom mappings are centralized and close to the boundary.
-- [ ] Domain terms match stakeholder language.
+- [ ] ドメインの結果には自己説明的な名前を使う。
+- [ ] 数値のトランスポートコードにプロダクト固有の意味を詰め込みすぎていない。
+- [ ] 独自マッピングは境界付近にまとまっている。
+- [ ] ドメイン用語はステークホルダーの言葉と一致している。
 
-## Verification
+## 検証
 
-- [ ] The simplification reduces file jumps, call-stack jumps, or mental mappings.
-- [ ] Behavior preservation is verified by tests or a concrete manual check.
-- [ ] The change does not move complexity into hidden magic.
-- [ ] Review comments cite observable maintenance or onboarding cost, not taste.
+- [ ] 単純化によりファイル間ジャンプ、コールスタック上のジャンプ、頭の中の対応が減る。
+- [ ] 振る舞いの保持はテストまたは具体的な手動確認で検証済みである。
+- [ ] 変更が隠れた魔法へ複雑さを移していない。
+- [ ] レビューコメントは観測可能な保守／オンボーディングコストを引用しており、好み論になっていない。

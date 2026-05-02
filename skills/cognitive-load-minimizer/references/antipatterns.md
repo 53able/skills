@@ -1,63 +1,63 @@
-# Cognitive Load Antipatterns
+# 認知負荷のアンチパターン
 
-Use this reference when deciding whether a design choice creates extraneous cognitive load.
+設計判断が余計な認知負荷を生むかどうかを決めるときの参照。
 
-## Control Flow Load
+## 制御フロー負荷
 
-- Complex conditionals: Boolean expressions that require remembering several partial truths.
-  - Prefer named intermediate facts.
-  - Keep the final branch readable as a business rule.
-- Nested ifs: Deep indentation that forces readers to retain preconditions.
-  - Prefer guard clauses when local style allows it.
-  - Keep the main path visually dominant.
+- 複雑な条件式: 複数の部分的な真偽を覚えないと読めないブール式。
+  - 名前のついた中間事実を優先する。
+  - 最終分岐が業務ルールとして読めるようにする。
+- ネストした if: 読み手に前提条件を覚えさせる深いインデント。
+  - ローカルなスタイルが許すならガード節を優先する。
+  - 主経路が視覚的に支配的であるようにする。
 
-## Abstraction Load
+## 抽象化負荷
 
-- Inheritance chains: Behavior spread across parent and child classes.
-  - Prefer composition when behavior varies independently.
-  - Avoid edits that require reading every ancestor and descendant first.
-- Shallow modules: Many tiny methods, classes, or files whose interfaces exceed their value.
-  - Prefer deep modules with simple interfaces.
-  - Keep important crux logic visible enough to find.
-- SRP misread as "one tiny thing": Factories, wrappers, and helpers whose names carry more complexity than their implementation.
-  - Judge responsibility by stakeholder and change reason, not by line count.
+- 継承チェーン: 親子クラスにまたがって振る舞いが散らばる。
+  - 振る舞いが独立して変わるなら合成を優先する。
+  - 祖先と子孫を全部読まないと編集できない状態を避ける。
+- 浅いモジュール: インターフェースの理解コストが実装の価値を上回る、細かいメソッド／クラス／ファイルの多数。
+  - 単純なインターフェースを持つ深いモジュールを優先する。
+  - 核となるロジックが見つけられるようにする。
+- SRP の誤読「1ファイル1ミニこと」: 名前が実装より複雑なファクトリ、ラッパー、ヘルパー。
+  - 責務はステークホルダーと変更理由で判断し、行数では決めない。
 
-## Distributed Load
+## 分散負荷
 
-- Shallow microservices: Services that change together, deploy together, or require local reproduction together.
-  - Prefer modular monoliths until separate deployment, scaling, or ownership is real.
-  - Delay network boundaries until the team has enough domain information.
-- Distributed monoliths: Network calls that preserve tight coupling while adding debugging cost.
-  - Reduce cross-service change paths before adding more service boundaries.
+- 浅いマイクロサービス: 一緒に変わり、一緒にデプロイし、ローカル再現もセットのサービス。
+  - 別デプロイ・スケール・オーナーシップが現実になるまでモジュラモノリスを優先する。
+  - チームにドメイン情報が足りるまでネットワーク境界を遅らせる。
+- 分散モノリス: 密結合はそのままに、デバッグコストだけ増えるネットワーク呼び出し。
+  - サービス境界を増やす前に、サービス間の変更経路を減らす。
 
-## Language And Framework Load
+## 言語・フレームワーク負荷
 
-- Feature-rich language tricks: Syntax that requires remembering specification details.
-  - Prefer idioms that the local team reads without reconstructing a standards discussion.
-- Framework magic in core logic: Business rules hidden behind lifecycle hooks, decorators, implicit naming, or generated behavior.
-  - Keep framework integration at the edges.
-  - Test core behavior without booting framework infrastructure where possible.
+- 言語機能の技巧: 仕様の細部を思い出さないと読めない構文。
+  - チームが標準議論なしで読めるイディオムを優先する。
+- コアロジックのフレームワーク魔法: ライフサイクルフック、デコレータ、暗黙の命名、生成挙動の裏に業務ルールが隠れる。
+  - フレームワーク統合は外側に寄せる。
+  - 可能ならフレームワーク基盤を立ち上げずにコアの振る舞いをテストする。
 
-## Protocol And Mapping Load
+## プロトコル・マッピング負荷
 
-- Business meaning encoded in numeric status values.
-  - Use self-describing domain codes in payloads.
-  - Reserve transport status for broad transport semantics.
-- Custom enum or database codes without nearby names.
-  - Prefer named constants, schemas, or explicit dictionaries close to the boundary.
+- 業務意味を数値ステータスにエンコードしている。
+  - ペイロードには自己説明的なドメインコードを使う。
+  - トランスポート用ステータスは広い輸送語義に留める。
+- 名前のないカスタム enum や DB コード。
+  - 境界付近に名前付き定数、スキーマ、明示的な辞書を置くことを優先する。
 
-## Architecture Load
+## アーキテクチャ負荷
 
-- DRY abuse: Shared helpers created before concepts prove identical.
-  - Keep a little duplication when abstraction would couple unrelated features.
-  - Extract after observing repeated change in the same direction.
-- Decorative layers: Ports, adapters, repositories, services, or folders added to satisfy an architecture image.
-  - Add layers only when they hide real complexity or protect a practical extension point.
-- DDD as folder structure: Domain terms used as ceremony rather than shared language.
-  - Keep DDD focused on problem-space understanding, boundaries, and stakeholder language.
+- DRY の乱用: 概念が同一だと証明する前に共有ヘルパーを作る。
+  - 抽象が無関係な機能を結びつけるなら少し重複を残す。
+  - 同じ方向への変更が繰り返し観測されてから抽出する。
+- 装飾レイヤー: ポート、アダプタ、リポジトリ、サービス、フォルダを「絵」として足しただけ。
+  - 本当に複雑さを隠すか、実用的な拡張点を守るときだけレイヤーを足す。
+- DDD をフォルダ構造だけにする: ドメイン用語が儀式になって共有言語になっていない。
+  - DDD は問題空間の理解、境界、ステークホルダーの言葉に集中させる。
 
-## Familiarity Trap
+## 馴染みの罠
 
-- Familiar code that feels simple only because long-term maintainers memorized it.
-  - Ask a newer contributor to trace the change path.
-  - Treat confusion beyond roughly 40 minutes as a signal to improve structure or documentation.
+- 長期メンバーだけが暗記していて簡単に感じるコード。
+  - 新しめのコントリビュータに変更経路を追跡してもらう。
+  - おおよそ40分を超える混乱は、構造かドキュメントを改善する信号とみなす。
