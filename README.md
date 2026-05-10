@@ -11,11 +11,11 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **thinking-ensemble** — 16の MBTI 認知レンズを NT / NF / SJ / SP の4グループに分け、全グループを並列サブエージェントとして同時起動。タスク重みづけ統合で認知的多様性を最大化する。
 
-## 読みやすさ・XAI（多エージェント）
+## 執筆・発信
 
-ソース忠実性と読みやすさを反復改善するハーネス（プラグイン同梱）。
+フィード型の Web 長文を、クリックから読了まで設計するスキル。
 
-- **readability-xai-harness-plugin** — Cursor / Claude プラグイン形式（`skills/readability-xai-harness-plugin/`）。同梱スキル: `readability-xai-orchestrator`, `readability-narrator`, `faithful-evaluator-text`, `faithful-critic-text`, `coherence-agent-text`（QA はエージェント定義のみ `agents/readability-qa.md`）。
+- **readable-writing-workflow** — 「届けるまでが仕事」としてタイトル比重・読者メリット・圧縮・寝かせ・インプット／リサーチ／構成の配分を手順化する（一次エッセイ由来の要旨を `references/mindset-and-tactics.md` に整理）。
 
 ## 動画生成
 
@@ -34,17 +34,19 @@ npx skills add 53able/skills
 # 特定のスキルだけインストール
 npx skills add 53able/skills --skill thinking-ensemble
 npx skills add 53able/skills --skill meeting-to-video
+npx skills add 53able/skills --skill readable-writing-workflow
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
 npx skills add 53able/skills --skill meeting-to-video -g -a cursor
+npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
 
 ```bash
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
-npx skills add https://github.com/53able/skills/tree/main/skills/readability-xai-harness-plugin/skills/readability-xai-orchestrator -g
+npx skills add https://github.com/53able/skills/tree/main/skills/readable-writing-workflow -g
 ```
 
 ## スキル構成
