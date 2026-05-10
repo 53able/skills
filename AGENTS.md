@@ -18,6 +18,7 @@ npx skills add 53able/skills --skill meeting-to-video -g
 
 ```bash
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
+npx skills add https://github.com/53able/skills/tree/main/skills/readable-writing-workflow -g
 ```
 
 ## meeting-to-video のメモ
