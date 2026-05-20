@@ -23,6 +23,13 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **meeting-to-video** — ミーティングのトランスクリプトから Remotion ストーリー型ビデオプロジェクトを生成する。`npx remotion preview` でローカルプレビューできる状態まで自動構築する。ElevenLabs / OpenAI TTS によるボイスオーバー生成にも対応。
 
+## エージェント・LLM 基盤
+
+コーディングエージェントの拡張と、本番向け LLM アプリケーション設計のスキル。
+
+- **pi-agent-harness** — [Pi Agent Harness](https://github.com/earendil-works/pi) の開発・拡張。CLI、Extension、SDK 組み込み、セッション管理、マルチプロバイダ LLM 設定をカバーする。
+- **reliable-llm-app-principles** — 12-Factor Agents を基に LLM アプリの設計・レビュー・改善を行う。プロンプト境界、構造化出力、状態管理、人間承認、監査可能性を手順化する。
+
 ## インストール
 
 このリポジトリを GitHub に public で公開後、以下のコマンドでインストールできる。
@@ -35,11 +42,15 @@ npx skills add 53able/skills
 npx skills add 53able/skills --skill thinking-ensemble
 npx skills add 53able/skills --skill meeting-to-video
 npx skills add 53able/skills --skill readable-writing-workflow
+npx skills add 53able/skills --skill pi-agent-harness
+npx skills add 53able/skills --skill reliable-llm-app-principles
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
 npx skills add 53able/skills --skill meeting-to-video -g -a cursor
 npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
+npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
+npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -47,6 +58,8 @@ npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
 ```bash
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
 npx skills add https://github.com/53able/skills/tree/main/skills/readable-writing-workflow -g
+npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
+npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
 ```
 
 ## スキル構成
