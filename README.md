@@ -16,6 +16,7 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 フィード型の Web 長文を、クリックから読了まで設計するスキル。
 
 - **readable-writing-workflow** — 「届けるまでが仕事」としてタイトル比重・読者メリット・圧縮・寝かせ・インプット／リサーチ／構成の配分を手順化する（一次エッセイ由来の要旨を `references/mindset-and-tactics.md` に整理）。
+- **zenn-markdown** — Zenn Flavored Markdown の記法（message/details、埋め込み、mermaid 制限、KaTeX 等）を適用して記事・スクラップ・本の原稿を執筆・校正する。
 
 ## 動画生成
 
@@ -35,11 +36,13 @@ npx skills add 53able/skills
 npx skills add 53able/skills --skill thinking-ensemble
 npx skills add 53able/skills --skill meeting-to-video
 npx skills add 53able/skills --skill readable-writing-workflow
+npx skills add 53able/skills --skill zenn-markdown
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
 npx skills add 53able/skills --skill meeting-to-video -g -a cursor
 npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
+npx skills add 53able/skills --skill zenn-markdown -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -47,6 +50,7 @@ npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
 ```bash
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
 npx skills add https://github.com/53able/skills/tree/main/skills/readable-writing-workflow -g
+npx skills add https://github.com/53able/skills/tree/main/skills/zenn-markdown -g
 ```
 
 ## スキル構成
