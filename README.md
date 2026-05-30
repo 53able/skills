@@ -31,6 +31,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 - **pi-agent-harness** — [Pi Agent Harness](https://github.com/earendil-works/pi) の開発・拡張。CLI、Extension、SDK 組み込み、セッション管理、マルチプロバイダ LLM 設定をカバーする。
 - **reliable-llm-app-principles** — 12-Factor Agents を基に LLM アプリの設計・レビュー・改善を行う。プロンプト境界、構造化出力、状態管理、人間承認、監査可能性を手順化する。
 
+## コードベース再実装
+
+仕様未整備のレガシー機能を、観察とプリミティブ分解を経て外科的に再実装するスキル。
+
+- **primitive-reimpl** — 既存コードから振る舞いと推定仕様を抽出し、プリミティブ能力へ分解して必要な部分だけ新モジュールとして再実装する。仕様マップ検証スクリプトとテンプレートを同梱。
+
 ## インストール
 
 このリポジトリを GitHub に public で公開後、以下のコマンドでインストールできる。
@@ -46,6 +52,7 @@ npx skills add 53able/skills --skill readable-writing-workflow
 npx skills add 53able/skills --skill zenn-markdown
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
+npx skills add 53able/skills --skill primitive-reimpl
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -54,6 +61,7 @@ npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
 npx skills add 53able/skills --skill zenn-markdown -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
+npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -64,6 +72,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/readable-writin
 npx skills add https://github.com/53able/skills/tree/main/skills/zenn-markdown -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
+npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
 ```
 
 ## スキル構成
