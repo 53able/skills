@@ -1,0 +1,24 @@
+{
+  "purpose": "",
+  "audience": "",
+  "message": "",
+  "source_summary": "",
+  "elements": [
+    {"id": "e1", "label": "", "type": "actor|concept|process|data|state|artifact|other", "priority": "primary|secondary|support"}
+  ],
+  "relationships": [
+    {"from": "e1", "to": "e2", "verb": "", "direction": "one-way|two-way|none", "kind": "cause|flow|contrast|include|depend|exchange|sequence|other"}
+  ],
+  "groups": [
+    {"label": "", "element_ids": []}
+  ],
+  "candidate_patterns": [""],
+  "selected_pattern": "",
+  "style_rules": {
+    "shape_semantics": "",
+    "color_semantics": "",
+    "line_semantics": "",
+    "font_weight_rules": ""
+  },
+  "open_questions": []
+}
