@@ -24,6 +24,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **meeting-to-video** — ミーティングのトランスクリプトから Remotion ストーリー型ビデオプロジェクトを生成する。`npx remotion preview` でローカルプレビューできる状態まで自動構築する。ElevenLabs / OpenAI TTS によるボイスオーバー生成にも対応。
 
+## 開発ワークフロー
+
+実装プランの品質担保・PR・コミットなど、着手前後の手順をエージェントに載せるスキル。
+
+- **self-refine** — プラン実行前に Multi-Aspect 評価（目的整合性・影響範囲・前提妥当性・実行可能性・認知負荷）でセルフリファインし、全次元 OK になってから実行する。「実行して」「進めて」「go」の直前に使用。
+
 ## エージェント・LLM 基盤
 
 コーディングエージェントの拡張と、本番向け LLM アプリケーション設計のスキル。
@@ -52,6 +58,7 @@ npx skills add 53able/skills --skill readable-writing-workflow
 npx skills add 53able/skills --skill zenn-markdown
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
+npx skills add 53able/skills --skill self-refine
 npx skills add 53able/skills --skill primitive-reimpl
 
 # Cursor 向けにグローバルインストール
@@ -61,6 +68,7 @@ npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
 npx skills add 53able/skills --skill zenn-markdown -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
+npx skills add 53able/skills --skill self-refine -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
 ```
 
@@ -72,6 +80,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/readable-writin
 npx skills add https://github.com/53able/skills/tree/main/skills/zenn-markdown -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
+npx skills add https://github.com/53able/skills/tree/main/skills/self-refine -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
 ```
 
