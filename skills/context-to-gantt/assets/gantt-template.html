@@ -22,6 +22,42 @@
     * { box-sizing: border-box; }
     body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: #fafafa; }
 
+
+    .timeline-gap {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: var(--gap-width, 28px);
+      background: repeating-linear-gradient(135deg, #f3f4f6 0, #f3f4f6 4px, #e5e7eb 4px, #e5e7eb 8px);
+      border-left: 1px dashed hsl(var(--border));
+      border-right: 1px dashed hsl(var(--border));
+      z-index: 2;
+      opacity: .9;
+    }
+    .timeline-gap-label {
+      position: absolute;
+      top: 4px;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: hsl(var(--muted-foreground));
+      background: white;
+      border: 1px solid hsl(var(--border));
+      border-radius: 9999px;
+      padding: 2px 6px;
+      white-space: nowrap;
+      z-index: 6;
+    }
+    .task-bar-split {
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+    .compact-note {
+      margin-left: 8px;
+      color: hsl(var(--muted-foreground));
+    }
+
     /* ── Gantt layout ── */
     .gantt-container {
       display: flex;
@@ -291,177 +327,251 @@ const GANTT_DATA = {{GANTT_JSON}};
 // ──────────────────────────────────────────────
 // RENDER ENGINE
 // ──────────────────────────────────────────────
-const MONTH_WIDTH = 120; // px per month
+const MONTH_WIDTH = 120; // px per month inside visible windows
 const ROW_HEIGHT  = 52;  // px per task row
 const GROUP_HEADER_HEIGHT = 29;
+const GAP_WIDTH = 28;
 
-const COLOR_NAMES = ['blue','green','orange','purple','red','gray'];
-let colorIdx = 0;
+const COLOR_NAMES = ['blue','green','purple','orange','red','gray'];
 const colorMap = {};
 
-function getColor(taskId) {
+const getColor = (taskId) => {
   if (!colorMap[taskId]) {
-    colorMap[taskId] = COLOR_NAMES[colorIdx % COLOR_NAMES.length];
-    colorIdx++;
+    const colorIndex = Object.keys(colorMap).length;
+    colorMap[taskId] = COLOR_NAMES[colorIndex % COLOR_NAMES.length];
   }
   return colorMap[taskId];
-}
+};
 
-function parseDate(s) {
+const parseDate = (s) => {
   const [y, m, d] = s.split('-').map(Number);
   return new Date(y, m - 1, d);
-}
+};
 
-function startOfMonth(d) {
+const fmtDate = (d) => {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+
+const addMonths = (d, n) => {
+  return new Date(d.getFullYear(), d.getMonth() + n, 1);
+};
+
+const startOfMonth = (d) => {
   return new Date(d.getFullYear(), d.getMonth(), 1);
-}
+};
 
-function monthsBetween(a, b) {
+const endOfMonth = (d) => {
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+};
+
+const monthsBetween = (a, b) => {
   return (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
-}
+};
 
-function dateToX(date, chartStart) {
-  const msPerMonth = 1;
-  const monthFrac = monthsBetween(chartStart, date) +
-    (date.getDate() - 1) / daysInMonth(date.getFullYear(), date.getMonth());
-  return monthFrac * MONTH_WIDTH;
-}
-
-function daysInMonth(year, month) {
+const daysInMonth = (year, month) => {
   return new Date(year, month + 1, 0).getDate();
-}
+};
 
-function initials(name) {
+const monthFractionOffset = (date) => {
+  return ((date.getDate() - 1) / daysInMonth(date.getFullYear(), date.getMonth())) * MONTH_WIDTH;
+};
+
+const initials = (name) => {
   if (!name) return '?';
   const parts = name.trim().split(/\s+/);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
   return name.substring(0, 2).toUpperCase();
-}
+};
 
-function render() {
+const collectDates = (data) => [
+  ...data.groups.flatMap((group) =>
+    group.tasks.flatMap((task) => [parseDate(task.startDate), parseDate(task.endDate)])
+  ),
+  ...(data.markers || []).map((marker) => parseDate(marker.date)),
+];
+
+const buildCompactSegments = (data) => {
+  // 作品史では「継続中の長い状態」そのものより、開始・受賞・周年・完結などの
+  // 変化点を読みたい。各変化点の前後だけを見える窓として残し、間の静かな年を折りたたむ。
+  const windows = collectDates(data)
+    .map((d) => ({ start: addMonths(startOfMonth(d), -2), end: addMonths(startOfMonth(d), 3) }))
+    .sort((a,b) => a.start - b.start);
+
+  // 近接する窓は結合する。15か月以内の空白はそのまま見せ、長い空白だけ省略する。
+  const merged = windows.reduce((acc, w) => {
+    const last = acc.at(-1);
+    if (!last) return [{...w}];
+    const gapMonths = monthsBetween(last.end, w.start);
+    if (gapMonths <= 15) {
+      const mergedLast = w.end > last.end ? {...last, end: w.end} : last;
+      return [...acc.slice(0, -1), mergedLast];
+    }
+    return [...acc, {...w}];
+  }, []);
+
+  const segments = merged.map((seg) => {
+    const monthCount = monthsBetween(seg.start, seg.end);
+    const months = Array.from({ length: Math.max(1, monthCount) }, (_, i) => addMonths(seg.start, i));
+    return { ...seg, months, width: Math.max(1, months.length) * MONTH_WIDTH };
+  });
+
+  return segments.reduce((acc, seg, i) => {
+    const x = acc.nextX;
+    const out = { ...seg, x, index: i };
+    return {
+      nextX: x + seg.width + (i < segments.length - 1 ? GAP_WIDTH : 0),
+      items: [...acc.items, out],
+    };
+  }, { nextX: 0, items: [] }).items;
+};
+
+const dateToCompactX = (date, segments) => {
+  for (const seg of segments) {
+    if (date >= seg.start && date < seg.end) {
+      const mOff = monthsBetween(seg.start, startOfMonth(date));
+      return seg.x + mOff * MONTH_WIDTH + monthFractionOffset(date);
+    }
+  }
+  // If date falls in omitted range, return nearest visible edge.
+  if (date < segments[0].start) return 0;
+  const omittedSegment = segments
+    .slice(0, -1)
+    .find((seg, i) => date >= seg.end && date < segments[i + 1].start);
+  if (omittedSegment) return omittedSegment.x + omittedSegment.width + GAP_WIDTH / 2;
+  const last = segments[segments.length - 1];
+  return last.x + last.width;
+};
+
+const buildHeaderAndGuides = (segments) => {
+  const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const monthsHTML = segments.flatMap((seg) =>
+    seg.months.map((month, i) => {
+      const x = seg.x + i * MONTH_WIDTH;
+      return `<div class="month-cell" style="position:absolute;left:${x}px;--month-width:${MONTH_WIDTH}px">${MONTH_LABELS[month.getMonth()]}</div>`;
+    })
+  ).join('');
+
+  const yearLabelsHTML = segments.flatMap((seg) =>
+    seg.months
+      .map((m, i) => ({ m, i }))
+      .filter(({ m, i }) => i === 0 || m.getFullYear() !== seg.months[i - 1].getFullYear())
+      .map(({ m, i }) => `<div class="year-label" style="left:${seg.x + i * MONTH_WIDTH}px">${m.getFullYear()}</div>`)
+  ).join('');
+
+  const guidesHTML = segments.flatMap((seg) =>
+    seg.months.map((_, i) =>
+      `<div class="month-guide" style="left:${seg.x + i * MONTH_WIDTH}px;top:0;height:100%;position:absolute;"></div>`
+    )
+  ).join('');
+
+  const gapItems = segments.slice(0, -1).map((a, i) => {
+    const b = segments[i + 1];
+    const x = a.x + a.width;
+    const omittedStart = a.end;
+    const omittedEnd = addMonths(b.start, -1);
+    return { x, omittedStart, omittedEnd };
+  });
+
+  const gapsHTML = gapItems
+    .map(({ x }) => `<div class="timeline-gap" style="left:${x}px;--gap-width:${GAP_WIDTH}px"></div>`)
+    .join('');
+  const gapLabelsHTML = gapItems
+    .map(({ x, omittedStart, omittedEnd }) =>
+      `<div class="timeline-gap-label" style="left:${x + GAP_WIDTH/2}px">${omittedStart.getFullYear()}–${omittedEnd.getFullYear()}省略</div>`
+    )
+    .join('');
+
+  return { monthsHTML, yearLabelsHTML, guidesHTML, gapsHTML, gapLabelsHTML };
+};
+
+const taskSegments = (task, segments) => {
+  const s = parseDate(task.startDate);
+  const e = parseDate(task.endDate);
+  return segments.flatMap((seg) => {
+    const visibleStart = s > seg.start ? s : seg.start;
+    const visibleEnd = e < endOfMonth(addMonths(seg.end, -1)) ? e : endOfMonth(addMonths(seg.end, -1));
+    if (visibleEnd < visibleStart) return [];
+    const sx = dateToCompactX(visibleStart, segments);
+    const ex = dateToCompactX(visibleEnd, segments) + MONTH_WIDTH * (1/30);
+    return [{ sx, bw: Math.max(ex - sx, 4), visibleStart, visibleEnd }];
+  });
+};
+
+const render = () => {
   const data = GANTT_DATA;
   document.title = data.title + ' — Gantt Chart';
 
-  // Compute date range from all tasks
-  let minDate = null, maxDate = null;
-  for (const group of data.groups) {
-    for (const task of group.tasks) {
-      const s = parseDate(task.startDate);
-      const e = parseDate(task.endDate);
-      if (!minDate || s < minDate) minDate = s;
-      if (!maxDate || e > maxDate) maxDate = e;
-    }
-  }
-  if (!minDate) { document.getElementById('gantt-root').textContent = 'No tasks.'; return; }
+  const allDates = collectDates(data);
+  if (!allDates.length) { document.getElementById('gantt-root').textContent = 'No tasks.'; return; }
 
-  // Pad by 1 month on each side
-  const chartStart = new Date(minDate.getFullYear(), minDate.getMonth() - 1, 1);
-  const chartEnd   = new Date(maxDate.getFullYear(), maxDate.getMonth() + 2, 1);
-  const totalMonths = monthsBetween(chartStart, chartEnd);
-
-  // Build month columns array
-  const months = [];
-  let cur = new Date(chartStart);
-  while (cur < chartEnd) {
-    months.push(new Date(cur));
-    cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
-  }
-
-  const totalWidth = totalMonths * MONTH_WIDTH;
+  const segments = buildCompactSegments(data);
+  const lastSeg = segments[segments.length - 1];
+  const totalWidth = lastSeg.x + lastSeg.width;
+  const { monthsHTML, yearLabelsHTML, guidesHTML, gapsHTML, gapLabelsHTML } = buildHeaderAndGuides(segments);
+  const compactNoteHTML = segments.length > 1
+    ? '<span class="compact-note">長い空白期間を省略した圧縮表示です。斜線部分が省略区間です。</span>'
+    : '';
 
   // ── Sidebar HTML ──
-  let sidebarBodyHTML = '';
-  for (const group of data.groups) {
-    sidebarBodyHTML += `<div class="group-header">${esc(group.name)}</div>`;
-    for (const task of group.tasks) {
+  const sidebarBodyHTML = data.groups.map((group) => {
+    const tasksHTML = group.tasks.map((task) => {
       const dotClass = task.status ? `dot-${task.status}` : 'dot-todo';
-      sidebarBodyHTML += `
+      return `
         <div class="task-row-sidebar">
           <div class="task-status-dot ${dotClass}"></div>
           <span title="${esc(task.name)}">${esc(task.name)}</span>
         </div>`;
-    }
-  }
-
-  // ── Timeline header ──
-  // Group months by year for year label
-  const yearGroups = {};
-  for (const m of months) {
-    const y = m.getFullYear();
-    if (!yearGroups[y]) yearGroups[y] = [];
-    yearGroups[y].push(m);
-  }
-  const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  let monthsHTML = '';
-  for (const m of months) {
-    monthsHTML += `<div class="month-cell" style="--month-width:${MONTH_WIDTH}px">${MONTH_LABELS[m.getMonth()]}</div>`;
-  }
-
-  // Year labels (absolute positioned)
-  let yearLabelsHTML = '';
-  let xOff = 0;
-  for (const [year, yMonths] of Object.entries(yearGroups)) {
-    yearLabelsHTML += `<div class="year-label" style="left:${xOff}px">${year}</div>`;
-    xOff += yMonths.length * MONTH_WIDTH;
-  }
-
-  // ── Timeline body ──
-  const today = new Date();
-  const todayX = dateToX(today, chartStart);
-
-  // Month guide lines
-  let guidesHTML = '';
-  for (let i = 0; i < months.length; i++) {
-    guidesHTML += `<div class="month-guide" style="left:${i * MONTH_WIDTH}px;top:0;height:100%;position:absolute;"></div>`;
-  }
+    }).join('');
+    return `<div class="group-header">${esc(group.name)}</div>${tasksHTML}`;
+  }).join('');
 
   // Markers
-  let markersHTML = '';
-  for (const marker of (data.markers || [])) {
-    const mx = dateToX(parseDate(marker.date), chartStart);
-    markersHTML += `
+  const markersHTML = (data.markers || []).map((marker) => {
+    const mx = dateToCompactX(parseDate(marker.date), segments);
+    return `
       <div class="timeline-marker" style="left:${mx}px"></div>
       <div class="timeline-marker-badge" style="left:${mx}px">${esc(marker.label)}</div>`;
-  }
+  }).join('');
 
-  // Today line (shown in header for the badge, in body for the line)
-  const todayInRange = todayX >= 0 && todayX <= totalWidth;
+  // Today line
+  const today = new Date();
+  const todayX = dateToCompactX(today, segments);
+  const todayInRange = today >= segments[0].start && today < addMonths(lastSeg.end, 1);
 
-  // Task rows
-  let timelineBodyHTML = '';
-  for (const group of data.groups) {
-    timelineBodyHTML += `<div class="timeline-group-header" style="width:${totalWidth}px">&nbsp;</div>`;
-    for (const task of group.tasks) {
-      const sx = dateToX(parseDate(task.startDate), chartStart);
-      const ex = dateToX(parseDate(task.endDate), chartStart) + MONTH_WIDTH * (1/30); // add 1 day
-      const bw = Math.max(ex - sx, 4);
+  // Task rows. Long tasks are split into visible pieces around change windows.
+  const timelineBodyHTML = data.groups.map((group) => {
+    const tasksHTML = group.tasks.map((task) => {
       const color = task.color || getColor(task.id);
       const av = initials(task.assignee || task.name);
-      const labelVisible = bw > 40;
-
-      timelineBodyHTML += `
-        <div class="timeline-task-row" style="width:${totalWidth}px">
-          <div class="task-bar bar-${color}" style="left:${sx}px;width:${bw}px"
-               title="${esc(task.name)} (${task.startDate} → ${task.endDate})">
+      const pieces = taskSegments(task, segments);
+      const barsHTML = pieces.map((piece, idx) => {
+        const labelVisible = piece.bw > 60 && idx === 0;
+        return `
+          <div class="task-bar task-bar-split bar-${color}" style="left:${piece.sx}px;width:${piece.bw}px"
+               title="${esc(task.name)} (${task.startDate} → ${task.endDate}; visible ${fmtDate(piece.visibleStart)} → ${fmtDate(piece.visibleEnd)})">
             <div class="task-bar-avatar">${esc(av)}</div>
             ${labelVisible ? `<div class="task-bar-label">${esc(task.name)}</div>` : ''}
-          </div>
+          </div>`;
+      }).join('');
+      return `
+        <div class="timeline-task-row" style="width:${totalWidth}px">
+          ${barsHTML}
         </div>`;
-    }
-  }
+    }).join('');
+    return `<div class="timeline-group-header" style="width:${totalWidth}px">&nbsp;</div>${tasksHTML}`;
+  }).join('');
 
-  // ── Assemble ──
   const root = document.getElementById('gantt-root');
   root.innerHTML = `
     <header style="padding:16px 20px 8px;background:white;border-bottom:1px solid hsl(220 13% 91%)">
       <h1 style="margin:0;font-size:18px;font-weight:700;color:hsl(224 71.4% 4.1%)">${esc(data.title)}</h1>
       <p style="margin:4px 0 0;font-size:12px;color:hsl(220 8.9% 46.1%)">
         ${data.exportedAt ? 'Generated ' + data.exportedAt : 'Gantt Chart'}
+        ${compactNoteHTML}
       </p>
     </header>
     <div class="gantt-container" style="margin:0 1rem 1rem;height:calc(100vh - 80px)">
-      <!-- Sidebar -->
       <div class="gantt-sidebar">
         <div class="gantt-sidebar-header">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -472,24 +582,21 @@ function render() {
         <div class="gantt-sidebar-body">${sidebarBodyHTML}</div>
       </div>
 
-      <!-- Timeline -->
       <div class="gantt-timeline" id="timeline">
-        <!-- Header -->
         <div class="timeline-header" style="position:sticky;top:0;z-index:5;min-width:${totalWidth}px">
           <div style="position:relative;width:${totalWidth}px;height:100%">
             ${yearLabelsHTML}
-            <div class="months-row" style="position:absolute;bottom:0;width:${totalWidth}px">
+            <div class="months-row" style="position:absolute;bottom:0;width:${totalWidth}px;height:32px">
               ${monthsHTML}
             </div>
-            ${todayInRange ? `
-              <div class="today-badge" style="left:${todayX}px">Today</div>
-            ` : ''}
+            ${gapLabelsHTML}
+            ${todayInRange ? `<div class="today-badge" style="left:${todayX}px">Today</div>` : ''}
           </div>
         </div>
 
-        <!-- Body -->
         <div class="timeline-body" style="position:relative;min-width:${totalWidth}px">
           ${guidesHTML}
+          ${gapsHTML}
           ${markersHTML}
           ${todayInRange ? `<div class="today-line" style="left:${todayX}px"></div>` : ''}
           ${timelineBodyHTML}
@@ -497,28 +604,22 @@ function render() {
       </div>
     </div>`;
 
-  // Sync sidebar scroll with timeline scroll
   const sidebar = root.querySelector('.gantt-sidebar-body');
   const timeline = root.querySelector('#timeline');
-  timeline.addEventListener('scroll', () => {
-    sidebar.scrollTop = timeline.scrollTop;
-  });
+  timeline.addEventListener('scroll', () => { sidebar.scrollTop = timeline.scrollTop; });
 
-  // Scroll to today
   if (todayInRange) {
-    setTimeout(() => {
-      timeline.scrollLeft = Math.max(0, todayX - 300);
-    }, 50);
+    setTimeout(() => { timeline.scrollLeft = Math.max(0, todayX - 300); }, 50);
   }
-}
+};
 
-function esc(str) {
+const esc = (str) => {
   return String(str ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
-}
+};
 
 document.addEventListener('DOMContentLoaded', render);
 </script>
