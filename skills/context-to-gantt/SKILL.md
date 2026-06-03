@@ -14,6 +14,7 @@ description: 議事録・要件定義・プロジェクト記述などあらゆ�
 - デザインは [Kibo UI Gantt](https://www.kibo-ui.com/components/gantt) の視覚スタイルに準拠
   （shadcn/ui CSS 変数・カラーパレット・バーデザイン）。
 - Tailwind CSS は CDN 経由（`cdn.tailwindcss.com`）。React ビルドは不要。
+- タイムラインは長い変化なし期間を斜線の「省略区間」として折りたたむ圧縮表示を標準とする。開始・終了・マイルストーン・短期イベントなどの変化点周辺だけを残し、長期継続タスクは省略区間をまたいで分割表示する。
 
 ---
 
@@ -104,6 +105,8 @@ python3 skills/context-to-gantt/scripts/extract-tasks.py \
 
 `assets/gantt-template.html` を読み込み、以下の 2 箇所を置換して完成させる。
 
+テンプレートには圧縮タイムラインの描画ロジックが含まれる。長い変化なし期間は自動で斜線の「省略区間」として折りたたまれるため、HTML 生成時に追加実装しない。長期間のタスクを短く見せるために日付を改変してはならない。実データの日付を保持し、表示側で省略する。
+
 | プレースホルダー | 置換内容 |
 |-----------------|---------|
 | `{{TITLE}}` | `data.title` の値 |
@@ -133,6 +136,8 @@ const GANTT_DATA = {
 生成した HTML ファイルのパスをユーザーに伝える。  
 ブラウザで開くとガントチャートが表示される。
 
+動作確認では、生成 HTML に `{{TITLE}}` と `{{GANTT_JSON}}` が残っていないこと、`timeline-gap` と `buildCompactSegments` が含まれていることを確認する。必要なら JavaScript 部分を抽出して `node --check` で構文確認する。
+
 ```
 ✓ ガントチャートを生成しました: {出力ファイルパス}
   - グループ数: N
@@ -151,3 +156,5 @@ const GANTT_DATA = {
 | `endDate < startDate` | `extract-tasks.py` の stderr を読み、日付を修正して再実行 |
 | タスクが 0 件 | コンテキストを再解析し、Action Items / TODO / マイルストーンの表現を探す |
 | HTML ファイルへの書き込み失敗 | `tmp/` ディレクトリの存在を確認し、存在しなければ作成してから再試行 |
+| ガントチャートが横に長過ぎる | データの日付を短縮せず、`assets/gantt-template.html` の圧縮表示ロジックが生成 HTML に入っているか確認する |
+| 省略区間が不自然 | マイルストーンや短期イベントの日付が不足していないか確認し、変化点を `markers` または短期タスクとして追加する |
