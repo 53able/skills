@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{TITLE}} — Gantt Chart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 224 71.4% 4.1%;
+      --card: 0 0% 100%;
+      --card-foreground: 224 71.4% 4.1%;
+      --border: 220 13% 91%;
+      --muted: 220 14.3% 95.9%;
+      --muted-foreground: 220 8.9% 46.1%;
+      --primary: 220.9 39.3% 11%;
+      --primary-foreground: 210 20% 98%;
+      --ring: 224 71.4% 4.1%;
+      --radius: 0.5rem;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: #fafafa; }
+
+    /* ── Gantt layout ── */
+    .gantt-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background: white;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      margin: 1rem;
+    }
+
+    /* Sidebar */
+    .gantt-sidebar {
+      width: 260px;
+      min-width: 200px;
+      border-right: 1px solid hsl(var(--border));
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .gantt-sidebar-header {
+      height: 64px;
+      border-bottom: 1px solid hsl(var(--border));
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      flex-shrink: 0;
+    }
+    .gantt-sidebar-body {
+      overflow-y: auto;
+      flex: 1;
+    }
+    .group-header {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      background: hsl(var(--muted));
+      border-bottom: 1px solid hsl(var(--border));
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .task-row-sidebar {
+      padding: 0 16px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid hsl(220 13% 96%);
+      font-size: 13px;
+      color: hsl(var(--foreground));
+      gap: 8px;
+    }
+    .task-row-sidebar span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .task-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Timeline */
+    .gantt-timeline {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .timeline-header {
+      display: flex;
+      height: 64px;
+      border-bottom: 1px solid hsl(var(--border));
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 5;
+    }
+    .year-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: hsl(var(--muted-foreground));
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 8px 12px 0;
+      position: absolute;
+      top: 0;
+    }
+    .months-row {
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 8px;
+      gap: 0;
+    }
+    .month-cell {
+      width: var(--month-width);
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      padding: 0 4px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid hsl(var(--border));
+    }
+    .timeline-body {
+      position: relative;
+      flex: 1;
+    }
+    .timeline-group-header {
+      height: 29px;
+      background: hsl(var(--muted));
+      border-bottom: 1px solid hsl(var(--border));
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: transparent; /* invisible — matches sidebar */
+    }
+    .timeline-task-row {
+      height: 52px;
+      border-bottom: 1px solid hsl(220 13% 96%);
+      position: relative;
+    }
+    /* Month grid lines */
+    .month-guide {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: hsl(var(--border));
+      pointer-events: none;
+    }
+    /* Today line */
+    .today-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: hsl(220.9 39.3% 11%);
+      z-index: 10;
+      pointer-events: none;
+    }
+    .today-badge {
+      position: absolute;
+      top: 4px;
+      transform: translateX(-50%);
+      background: hsl(220.9 39.3% 11%);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 11;
+    }
+    /* Task bar */
+    .task-bar {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 500;
+      color: white;
+      cursor: default;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+      min-width: 20px;
+      z-index: 2;
+    }
+    .task-bar-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .task-bar-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* Marker */
+    .timeline-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: hsl(25 95% 55%);
+      z-index: 9;
+      pointer-events: none;
+    }
+    .timeline-marker-badge {
+      position: absolute;
+      top: 4px;
+      transform: translateX(-50%);
+      background: hsl(25 95% 55%);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    /* Color palette */
+    .bar-blue   { background: hsl(221 83% 53%); }
+    .bar-green  { background: hsl(142 71% 45%); }
+    .bar-orange { background: hsl(25 95% 55%); }
+    .bar-purple { background: hsl(263 70% 50%); }
+    .bar-red    { background: hsl(0 84% 60%); }
+    .bar-gray   { background: hsl(220 9% 46%); }
+    .dot-todo       { background: hsl(220 9% 70%); }
+    .dot-in-progress{ background: hsl(221 83% 53%); }
+    .dot-done       { background: hsl(142 71% 45%); }
+    .dot-blocked    { background: hsl(0 84% 60%); }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {}
+      }
+    }
+  </script>
+</head>
+<body>
+
+<div id="gantt-root"></div>
+
+<script>
+// ──────────────────────────────────────────────
+// GANTT DATA — replace this block with extracted data
+// ──────────────────────────────────────────────
+const GANTT_DATA = {{GANTT_JSON}};
+
+// ──────────────────────────────────────────────
+// RENDER ENGINE
+// ──────────────────────────────────────────────
+const MONTH_WIDTH = 120; // px per month
+const ROW_HEIGHT  = 52;  // px per task row
+const GROUP_HEADER_HEIGHT = 29;
+
+const COLOR_NAMES = ['blue','green','orange','purple','red','gray'];
+let colorIdx = 0;
+const colorMap = {};
+
+function getColor(taskId) {
+  if (!colorMap[taskId]) {
+    colorMap[taskId] = COLOR_NAMES[colorIdx % COLOR_NAMES.length];
+    colorIdx++;
+  }
+  return colorMap[taskId];
+}
+
+function parseDate(s) {
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function startOfMonth(d) {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+
+function monthsBetween(a, b) {
+  return (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+}
+
+function dateToX(date, chartStart) {
+  const msPerMonth = 1;
+  const monthFrac = monthsBetween(chartStart, date) +
+    (date.getDate() - 1) / daysInMonth(date.getFullYear(), date.getMonth());
+  return monthFrac * MONTH_WIDTH;
+}
+
+function daysInMonth(year, month) {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+function initials(name) {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+
+function render() {
+  const data = GANTT_DATA;
+  document.title = data.title + ' — Gantt Chart';
+
+  // Compute date range from all tasks
+  let minDate = null, maxDate = null;
+  for (const group of data.groups) {
+    for (const task of group.tasks) {
+      const s = parseDate(task.startDate);
+      const e = parseDate(task.endDate);
+      if (!minDate || s < minDate) minDate = s;
+      if (!maxDate || e > maxDate) maxDate = e;
+    }
+  }
+  if (!minDate) { document.getElementById('gantt-root').textContent = 'No tasks.'; return; }
+
+  // Pad by 1 month on each side
+  const chartStart = new Date(minDate.getFullYear(), minDate.getMonth() - 1, 1);
+  const chartEnd   = new Date(maxDate.getFullYear(), maxDate.getMonth() + 2, 1);
+  const totalMonths = monthsBetween(chartStart, chartEnd);
+
+  // Build month columns array
+  const months = [];
+  let cur = new Date(chartStart);
+  while (cur < chartEnd) {
+    months.push(new Date(cur));
+    cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+  }
+
+  const totalWidth = totalMonths * MONTH_WIDTH;
+
+  // ── Sidebar HTML ──
+  let sidebarBodyHTML = '';
+  for (const group of data.groups) {
+    sidebarBodyHTML += `<div class="group-header">${esc(group.name)}</div>`;
+    for (const task of group.tasks) {
+      const dotClass = task.status ? `dot-${task.status}` : 'dot-todo';
+      sidebarBodyHTML += `
+        <div class="task-row-sidebar">
+          <div class="task-status-dot ${dotClass}"></div>
+          <span title="${esc(task.name)}">${esc(task.name)}</span>
+        </div>`;
+    }
+  }
+
+  // ── Timeline header ──
+  // Group months by year for year label
+  const yearGroups = {};
+  for (const m of months) {
+    const y = m.getFullYear();
+    if (!yearGroups[y]) yearGroups[y] = [];
+    yearGroups[y].push(m);
+  }
+  const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let monthsHTML = '';
+  for (const m of months) {
+    monthsHTML += `<div class="month-cell" style="--month-width:${MONTH_WIDTH}px">${MONTH_LABELS[m.getMonth()]}</div>`;
+  }
+
+  // Year labels (absolute positioned)
+  let yearLabelsHTML = '';
+  let xOff = 0;
+  for (const [year, yMonths] of Object.entries(yearGroups)) {
+    yearLabelsHTML += `<div class="year-label" style="left:${xOff}px">${year}</div>`;
+    xOff += yMonths.length * MONTH_WIDTH;
+  }
+
+  // ── Timeline body ──
+  const today = new Date();
+  const todayX = dateToX(today, chartStart);
+
+  // Month guide lines
+  let guidesHTML = '';
+  for (let i = 0; i < months.length; i++) {
+    guidesHTML += `<div class="month-guide" style="left:${i * MONTH_WIDTH}px;top:0;height:100%;position:absolute;"></div>`;
+  }
+
+  // Markers
+  let markersHTML = '';
+  for (const marker of (data.markers || [])) {
+    const mx = dateToX(parseDate(marker.date), chartStart);
+    markersHTML += `
+      <div class="timeline-marker" style="left:${mx}px"></div>
+      <div class="timeline-marker-badge" style="left:${mx}px">${esc(marker.label)}</div>`;
+  }
+
+  // Today line (shown in header for the badge, in body for the line)
+  const todayInRange = todayX >= 0 && todayX <= totalWidth;
+
+  // Task rows
+  let timelineBodyHTML = '';
+  for (const group of data.groups) {
+    timelineBodyHTML += `<div class="timeline-group-header" style="width:${totalWidth}px">&nbsp;</div>`;
+    for (const task of group.tasks) {
+      const sx = dateToX(parseDate(task.startDate), chartStart);
+      const ex = dateToX(parseDate(task.endDate), chartStart) + MONTH_WIDTH * (1/30); // add 1 day
+      const bw = Math.max(ex - sx, 4);
+      const color = task.color || getColor(task.id);
+      const av = initials(task.assignee || task.name);
+      const labelVisible = bw > 40;
+
+      timelineBodyHTML += `
+        <div class="timeline-task-row" style="width:${totalWidth}px">
+          <div class="task-bar bar-${color}" style="left:${sx}px;width:${bw}px"
+               title="${esc(task.name)} (${task.startDate} → ${task.endDate})">
+            <div class="task-bar-avatar">${esc(av)}</div>
+            ${labelVisible ? `<div class="task-bar-label">${esc(task.name)}</div>` : ''}
+          </div>
+        </div>`;
+    }
+  }
+
+  // ── Assemble ──
+  const root = document.getElementById('gantt-root');
+  root.innerHTML = `
+    <header style="padding:16px 20px 8px;background:white;border-bottom:1px solid hsl(220 13% 91%)">
+      <h1 style="margin:0;font-size:18px;font-weight:700;color:hsl(224 71.4% 4.1%)">${esc(data.title)}</h1>
+      <p style="margin:4px 0 0;font-size:12px;color:hsl(220 8.9% 46.1%)">
+        ${data.exportedAt ? 'Generated ' + data.exportedAt : 'Gantt Chart'}
+      </p>
+    </header>
+    <div class="gantt-container" style="margin:0 1rem 1rem;height:calc(100vh - 80px)">
+      <!-- Sidebar -->
+      <div class="gantt-sidebar">
+        <div class="gantt-sidebar-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+          Issues
+        </div>
+        <div class="gantt-sidebar-body">${sidebarBodyHTML}</div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="gantt-timeline" id="timeline">
+        <!-- Header -->
+        <div class="timeline-header" style="position:sticky;top:0;z-index:5;min-width:${totalWidth}px">
+          <div style="position:relative;width:${totalWidth}px;height:100%">
+            ${yearLabelsHTML}
+            <div class="months-row" style="position:absolute;bottom:0;width:${totalWidth}px">
+              ${monthsHTML}
+            </div>
+            ${todayInRange ? `
+              <div class="today-badge" style="left:${todayX}px">Today</div>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="timeline-body" style="position:relative;min-width:${totalWidth}px">
+          ${guidesHTML}
+          ${markersHTML}
+          ${todayInRange ? `<div class="today-line" style="left:${todayX}px"></div>` : ''}
+          ${timelineBodyHTML}
+        </div>
+      </div>
+    </div>`;
+
+  // Sync sidebar scroll with timeline scroll
+  const sidebar = root.querySelector('.gantt-sidebar-body');
+  const timeline = root.querySelector('#timeline');
+  timeline.addEventListener('scroll', () => {
+    sidebar.scrollTop = timeline.scrollTop;
+  });
+
+  // Scroll to today
+  if (todayInRange) {
+    setTimeout(() => {
+      timeline.scrollLeft = Math.max(0, todayX - 300);
+    }, 50);
+  }
+}
+
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>

@@ -29,6 +29,7 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 実装プランの品質担保・PR・コミットなど、着手前後の手順をエージェントに載せるスキル。
 
 - **self-refine** — プラン実行前に Multi-Aspect 評価（目的整合性・影響範囲・前提妥当性・実行可能性・認知負荷）でセルフリファインし、全次元 OK になってから実行する。「実行して」「進めて」「go」の直前に使用。
+- **context-to-gantt** — 議事録・要件・タスクリストなどのコンテキストからタスクと期間を抽出し、Kibo UI スタイルのガントチャートを単一 HTML で生成する。ビルド不要でブラウザ共有できる。
 
 ## エージェント・LLM 基盤
 
@@ -60,6 +61,7 @@ npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
 npx skills add 53able/skills --skill self-refine
 npx skills add 53able/skills --skill primitive-reimpl
+npx skills add 53able/skills --skill context-to-gantt
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -70,6 +72,7 @@ npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
 npx skills add 53able/skills --skill self-refine -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
+npx skills add 53able/skills --skill context-to-gantt -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -82,6 +85,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harnes
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
 npx skills add https://github.com/53able/skills/tree/main/skills/self-refine -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
+npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gantt -g
 ```
 
 ## スキル構成

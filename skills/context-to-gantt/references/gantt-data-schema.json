@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GanttData",
+  "description": "Schema for Kibo UI-styled Gantt chart data",
+  "type": "object",
+  "required": ["title", "groups"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Project or chart title displayed in the header"
+    },
+    "exportedAt": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date string for when the chart was generated (e.g. '2026-06-03')"
+    },
+    "groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "tasks"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": {
+            "type": "string",
+            "description": "Group / phase label shown in the sidebar"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "startDate", "endDate"],
+              "properties": {
+                "id": { "type": "string" },
+                "name": {
+                  "type": "string",
+                  "description": "Task label shown on the bar and in the sidebar"
+                },
+                "startDate": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "ISO date string, e.g. '2026-01-15'"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "ISO date string, must be >= startDate"
+                },
+                "assignee": {
+                  "type": "string",
+                  "description": "Short name or initials shown on the bar avatar (max 2 chars)"
+                },
+                "color": {
+                  "type": "string",
+                  "enum": ["blue", "green", "orange", "purple", "red", "gray"],
+                  "description": "Bar accent color"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["todo", "in-progress", "done", "blocked"],
+                  "description": "Task status (optional)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "markers": {
+      "type": "array",
+      "description": "Vertical milestone markers on the timeline",
+      "items": {
+        "type": "object",
+        "required": ["date", "label"],
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "label": { "type": "string" }
+        }
+      }
+    }
+  }
+}
