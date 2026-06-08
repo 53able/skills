@@ -18,6 +18,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 - **readable-writing-workflow** — 「届けるまでが仕事」としてタイトル比重・読者メリット・圧縮・寝かせ・インプット／リサーチ／構成の配分を手順化する（一次エッセイ由来の要旨を `references/mindset-and-tactics.md` に整理）。
 - **zenn-markdown** — Zenn Flavored Markdown の記法（message/details、埋め込み、mermaid 制限、KaTeX 等）を適用して記事・スクラップ・本の原稿を執筆・校正する。
 
+## プレゼンテーション
+
+聞き手中心のトーク設計とスライド監査のスキル。
+
+- **presentation-zen-garr-reynolds** — ガー・レイノルズの Presentation Zen 原則でブリーフ作成、スライド構成、slideument 分離、デリバリー指導、Markdown 下書き監査（`scripts/audit-presentation.py`）を手順化する。
+
 ## 動画生成
 
 ミーティングや議事録からエクスプレイナービデオを自動生成するスキル。
@@ -62,6 +68,7 @@ npx skills add 53able/skills --skill reliable-llm-app-principles
 npx skills add 53able/skills --skill self-refine
 npx skills add 53able/skills --skill primitive-reimpl
 npx skills add 53able/skills --skill context-to-gantt
+npx skills add 53able/skills --skill presentation-zen-garr-reynolds
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -73,6 +80,7 @@ npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
 npx skills add 53able/skills --skill self-refine -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
 npx skills add 53able/skills --skill context-to-gantt -g -a cursor
+npx skills add 53able/skills --skill presentation-zen-garr-reynolds -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -86,6 +94,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-ap
 npx skills add https://github.com/53able/skills/tree/main/skills/self-refine -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
 npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gantt -g
+npx skills add https://github.com/53able/skills/tree/main/skills/presentation-zen-garr-reynolds -g
 ```
 
 ## スキル構成
