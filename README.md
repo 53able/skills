@@ -10,6 +10,7 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 意思決定や問題解決に認知フレームワークを適用するスキル。
 
 - **thinking-ensemble** — 16の MBTI 認知レンズを NT / NF / SJ / SP の4グループに分け、全グループを並列サブエージェントとして同時起動。タスク重みづけ統合で認知的多様性を最大化する。
+- **decision-matrix** — 複数の選択肢を重み付き評価項目で定量的・客観的に比較する意思決定マトリクスを作成する。CSV/JSON 入力から加重合計を算出する `scripts/score_matrix.py` を同梱。
 
 ## 執筆・発信
 
@@ -69,6 +70,7 @@ npx skills add 53able/skills --skill self-refine
 npx skills add 53able/skills --skill primitive-reimpl
 npx skills add 53able/skills --skill context-to-gantt
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds
+npx skills add 53able/skills --skill decision-matrix
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -81,6 +83,7 @@ npx skills add 53able/skills --skill self-refine -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
 npx skills add 53able/skills --skill context-to-gantt -g -a cursor
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds -g -a cursor
+npx skills add 53able/skills --skill decision-matrix -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -95,6 +98,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/self-refine -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
 npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gantt -g
 npx skills add https://github.com/53able/skills/tree/main/skills/presentation-zen-garr-reynolds -g
+npx skills add https://github.com/53able/skills/tree/main/skills/decision-matrix -g
 ```
 
 ## スキル構成
