@@ -38,6 +38,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 - **self-refine** — プラン実行前に Multi-Aspect 評価（目的整合性・影響範囲・前提妥当性・実行可能性・認知負荷）でセルフリファインし、全次元 OK になってから実行する。「実行して」「進めて」「go」の直前に使用。
 - **context-to-gantt** — 議事録・要件・タスクリストなどのコンテキストからタスクと期間を抽出し、Kibo UI スタイルのガントチャートを単一 HTML で生成する。ビルド不要でブラウザ共有できる。
 
+## ドキュメント・変換
+
+LLM 投入前にローカル文書を扱いやすい形式へ変換するスキル。
+
+- **pdf-markdown-local** — ローカル PDF を Microsoft MarkItDown と uv で Markdown へ変換し、トークン効率よく LLM に渡す。`scripts/convert_pdf.py` を同梱。
+
 ## エージェント・LLM 基盤
 
 コーディングエージェントの拡張と、本番向け LLM アプリケーション設計のスキル。
@@ -71,6 +77,7 @@ npx skills add 53able/skills --skill primitive-reimpl
 npx skills add 53able/skills --skill context-to-gantt
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds
 npx skills add 53able/skills --skill decision-matrix
+npx skills add 53able/skills --skill pdf-markdown-local
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -84,6 +91,7 @@ npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
 npx skills add 53able/skills --skill context-to-gantt -g -a cursor
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds -g -a cursor
 npx skills add 53able/skills --skill decision-matrix -g -a cursor
+npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -99,6 +107,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimp
 npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gantt -g
 npx skills add https://github.com/53able/skills/tree/main/skills/presentation-zen-garr-reynolds -g
 npx skills add https://github.com/53able/skills/tree/main/skills/decision-matrix -g
+npx skills add https://github.com/53able/skills/tree/main/skills/pdf-markdown-local -g
 ```
 
 ## スキル構成
