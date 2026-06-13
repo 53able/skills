@@ -17,6 +17,7 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 フィード型の Web 長文を、クリックから読了まで設計するスキル。
 
 - **readable-writing-workflow** — 「届けるまでが仕事」としてタイトル比重・読者メリット・圧縮・寝かせ・インプット／リサーチ／構成の配分を手順化する（一次エッセイ由来の要旨を `references/mindset-and-tactics.md` に整理）。
+- **nihongo-skeleton-writing** — 単語・文・段落・縮約・敬語の観点で日本語文章の骨格を磨く。改稿チェックリストと段落ラベル用スクリプトを同梱。
 - **zenn-markdown** — Zenn Flavored Markdown の記法（message/details、埋め込み、mermaid 制限、KaTeX 等）を適用して記事・スクラップ・本の原稿を執筆・校正する。
 
 ## プレゼンテーション
@@ -69,6 +70,7 @@ npx skills add 53able/skills
 npx skills add 53able/skills --skill thinking-ensemble
 npx skills add 53able/skills --skill meeting-to-video
 npx skills add 53able/skills --skill readable-writing-workflow
+npx skills add 53able/skills --skill nihongo-skeleton-writing
 npx skills add 53able/skills --skill zenn-markdown
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
@@ -83,6 +85,7 @@ npx skills add 53able/skills --skill pdf-markdown-local
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
 npx skills add 53able/skills --skill meeting-to-video -g -a cursor
 npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
+npx skills add 53able/skills --skill nihongo-skeleton-writing -g -a cursor
 npx skills add 53able/skills --skill zenn-markdown -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
@@ -99,6 +102,7 @@ npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
 ```bash
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
 npx skills add https://github.com/53able/skills/tree/main/skills/readable-writing-workflow -g
+npx skills add https://github.com/53able/skills/tree/main/skills/nihongo-skeleton-writing -g
 npx skills add https://github.com/53able/skills/tree/main/skills/zenn-markdown -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
