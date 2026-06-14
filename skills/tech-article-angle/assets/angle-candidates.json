@@ -1,0 +1,14 @@
+{
+  "candidates": [
+    {
+      "title": "Example angle",
+      "scores": {
+        "reader_pain": 3,
+        "timeliness": 3,
+        "evidence_path": 2,
+        "transferability": 2,
+        "specificity": 3
+      }
+    }
+  ]
+}
