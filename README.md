@@ -33,6 +33,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **meeting-to-video** — ミーティングのトランスクリプトから Remotion ストーリー型ビデオプロジェクトを生成する。`npx remotion preview` でローカルプレビューできる状態まで自動構築する。ElevenLabs / OpenAI TTS によるボイスオーバー生成にも対応。
 
+## 命名
+
+ファイル・スラッグ・短い技術成果物の英語名を、意図から候補化して形式整形するスキル。
+
+- **naming-skill** — 日本語または英語の意図から最大4語の英語名候補を作り、kebab-case / snake_case / camelCase / PascalCase など change-case 由来の形式へ整形する。`scripts/format_name.py` を同梱。
+
 ## 開発ワークフロー
 
 実装プランの品質担保・PR・コミットなど、着手前後の手順をエージェントに載せるスキル。
@@ -82,6 +88,7 @@ npx skills add 53able/skills --skill context-to-gantt
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds
 npx skills add 53able/skills --skill decision-matrix
 npx skills add 53able/skills --skill pdf-markdown-local
+npx skills add 53able/skills --skill naming-skill
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -98,6 +105,7 @@ npx skills add 53able/skills --skill context-to-gantt -g -a cursor
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds -g -a cursor
 npx skills add 53able/skills --skill decision-matrix -g -a cursor
 npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
+npx skills add 53able/skills --skill naming-skill -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -116,6 +124,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gant
 npx skills add https://github.com/53able/skills/tree/main/skills/presentation-zen-garr-reynolds -g
 npx skills add https://github.com/53able/skills/tree/main/skills/decision-matrix -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pdf-markdown-local -g
+npx skills add https://github.com/53able/skills/tree/main/skills/naming-skill -g
 ```
 
 ## スキル構成
