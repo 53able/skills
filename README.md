@@ -45,6 +45,12 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 
 - **pake-app-builder** — Pake（Tauri v2）でウェブ URL を macOS / Windows / Linux 向けスタンドアロンアプリ（約 5 MB）にパッケージする。`scripts/check-env.sh` を同梱。
 
+## ブラウザ拡張
+
+WXT を使ったブラウザ拡張の設計・実装・検証を支援するスキル。
+
+- **wxt-extension-development** — WXT プロジェクトの調査、entrypoint 設計、manifest と権限変更、content script UI、storage、messaging、build、zip、ブラウザ検証を手順化する。`scripts/inspect-wxt-project.py` を同梱。
+
 ## 開発ワークフロー
 
 実装プランの品質担保・PR・コミットなど、着手前後の手順をエージェントに載せるスキル。
@@ -96,6 +102,7 @@ npx skills add 53able/skills --skill decision-matrix
 npx skills add 53able/skills --skill pdf-markdown-local
 npx skills add 53able/skills --skill naming-skill
 npx skills add 53able/skills --skill pake-app-builder
+npx skills add 53able/skills --skill wxt-extension-development
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -114,6 +121,7 @@ npx skills add 53able/skills --skill decision-matrix -g -a cursor
 npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
 npx skills add 53able/skills --skill naming-skill -g -a cursor
 npx skills add 53able/skills --skill pake-app-builder -g -a cursor
+npx skills add 53able/skills --skill wxt-extension-development -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -134,6 +142,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/decision-matrix
 npx skills add https://github.com/53able/skills/tree/main/skills/pdf-markdown-local -g
 npx skills add https://github.com/53able/skills/tree/main/skills/naming-skill -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pake-app-builder -g
+npx skills add https://github.com/53able/skills/tree/main/skills/wxt-extension-development -g
 ```
 
 ## スキル構成
