@@ -197,5 +197,5 @@ export default defineContentScript({
 - WXT Messaging: https://wxt.dev/guide/essentials/messaging
 - webext-bridge: https://github.com/antfu/webext-bridge
 - WXT CLI: https://wxt.dev/api/cli/wxt
-- Claude Code プロンプト例: references/claude-code-prompts.md（スキル同梱）
+- エージェント向けプロンプト例: references/agent-prompt-templates.md（スキル同梱）
 - 参考記事: https://zenn.dev/53able/articles/7e99295a28a75d

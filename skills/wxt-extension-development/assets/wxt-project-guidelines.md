@@ -1,5 +1,7 @@
 # WXTプロジェクト向けガイドライン
 
+エージェント向けプロジェクトルール（`AGENTS.md`、`CLAUDE.md` など）に転記する短いガイドライン案。
+
 - このプロジェクトはWXT製のブラウザ拡張である。
 - UI は React、対象ブラウザは Chrome、messaging は webext-bridge を既定とする。
 - `.wxt/` と `.output/` 配下の生成物を編集しない。

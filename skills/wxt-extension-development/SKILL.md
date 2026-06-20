@@ -28,10 +28,10 @@ python3 "$WXT_SKILL_DIR/scripts/inspect-wxt-project.py" /path/to/wxt-project
 
 リポジトリクローン内では `skills/wxt-extension-development/scripts/resolve_skill_dir.py` を指定する。`WXT_EXTENSION_DEVELOPMENT_SKILL_DIR` 環境変数でもパスを直接指定できる。
 
-   `package.json`、`wxt.config.*`、`web-ext.config.ts`、`entrypoints/`、UI フレームワーク、messaging、生成物ディレクトリの状態を確認する。
+   `package.json`、`wxt.config.*`、`web-ext.config.*`、`entrypoints/`、UI フレームワーク、messaging、生成物ディレクトリの状態を確認する。
 3. 新規作成の場合、パッケージマネージャ、React テンプレート、Chrome、生成先ディレクトリを明示してから `wxt init` の実行計画を作る。
 4. WXT公式仕様や用語が必要な場合だけ `references/wxt-field-guide.md` を読む。
-5. Claude Code への段階依頼が必要な場合は `references/claude-code-prompts.md` を参照する。
+5. コーディングエージェントへの段階依頼が必要な場合は `references/agent-prompt-templates.md` を参照する。
 
 **Step 2: 変更前に計画を作る**
 1. 変更対象のentrypointを1つずつ特定する。popup、options、background、content scriptを混同しない。
@@ -43,7 +43,7 @@ python3 "$WXT_SKILL_DIR/scripts/inspect-wxt-project.py" /path/to/wxt-project
    - manifest / permissions / host_permissions 変更
    - 対象 URL（`matches` / host_permissions）の拡大
 5. 検証コマンドを計画に含める。既定は Chrome の build script。zip 配布が対象なら `zip` も含める。Firefox は明示依頼時のみ `build:firefox` / `zip:firefox` を使う。
-6. 計画には禁止事項と停止条件を含める。テンプレは `references/claude-code-prompts.md` を参照。
+6. 計画には禁止事項と停止条件を含める。テンプレは `references/agent-prompt-templates.md` を参照。
 
 **Step 3: WXTの構造に沿って実装する**
 1. `entrypoints/` 直下のファイル名または1階層ディレクトリでentrypointを定義する。深いネストに自動発見を期待しない。
@@ -85,7 +85,7 @@ python3 "$WXT_SKILL_DIR/scripts/inspect-wxt-project.py" /path/to/wxt-project
 1. `git diff` または変更ファイル一覧を確認する。
 2. `.wxt/`、`.output/`、lockfile、package manifest、permissionsが意図せず変わっていないか確認する。
 3. 変更内容、検証結果、手動確認事項を分けて報告する。
-4. WXTやClaude Code向けプロジェクトルールを残す必要がある場合だけ、`assets/claude-wxt-guidelines.md` を参照して短い `CLAUDE.md` 案を作る。
+4. エージェント向けプロジェクトルールを残す必要がある場合だけ、`assets/wxt-project-guidelines.md` を参照して短い `AGENTS.md` や `CLAUDE.md` 案を作る。
 
 ## エラー処理
 

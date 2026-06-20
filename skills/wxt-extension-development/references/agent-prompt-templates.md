@@ -1,6 +1,6 @@
-# Claude Code 向けプロンプト例
+# コーディングエージェント向けプロンプト例
 
-WXT 拡張を Claude Code で進めるときの依頼テンプレート。禁止事項と停止条件を必ず含める。チーム既定（React / Chrome only / webext-bridge）は `SKILL.md` に準ずる。
+WXT 拡張をコーディングエージェント（Cursor、Claude Code、Codex など）で進めるときの依頼テンプレート。禁止事項と停止条件を必ず含める。チーム既定（React / Chrome only / webext-bridge）は `SKILL.md` に準ずる。
 
 ## 読み取り専用調査
 
@@ -10,7 +10,7 @@ WXT 拡張を Claude Code で進めるときの依頼テンプレート。禁止
 対象:
 - package.json
 - wxt.config.*（存在する場合）
-- web-ext.config.ts（存在する場合）
+- web-ext.config.*（存在する場合）
 - entrypoints/
 - src/（存在する場合）
 
@@ -58,7 +58,7 @@ WXT 拡張を Claude Code で進めるときの依頼テンプレート。禁止
 停止条件: 計画を出したら停止し、実装してよいか確認してください。
 ```
 
-plan mode を使う場合: `claude --permission-mode plan`。調査のための読み取りは許可されるが、コマンド実行を止めたいときはプロンプトで明示する。
+編集前に計画だけを依頼したい場合は、プロンプトで「承認前に編集しない」を明記する。エージェントが読み取り専用モードや plan mode を持つ場合はそれを使い、コマンド実行を止めたいときはプロンプトで明示する。
 
 ## 小さく実装
 
