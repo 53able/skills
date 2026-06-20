@@ -1,16 +1,6 @@
 # Claude Code 向けプロンプト例
 
-WXT 拡張を Claude Code で進めるときの依頼テンプレート。禁止事項と停止条件を必ず含める。
-
-## チーム既定
-
-| 項目 | 既定値 |
-|------|--------|
-| UI フレームワーク | React |
-| 対象ブラウザ | Chrome only（`build:firefox` / `zip:firefox` は既定では実行しない） |
-| messaging | `webext-bridge`（新規導入時の第一候補。既存が vanilla なら無理に置き換えない） |
-
-新規 `wxt init` では React テンプレートを選ぶ。Firefox 配布や messaging 方式の変更が必要なときは、計画段階で明示的に逸脱理由を書く。
+WXT 拡張を Claude Code で進めるときの依頼テンプレート。禁止事項と停止条件を必ず含める。チーム既定（React / Chrome only / webext-bridge）は `SKILL.md` に準ずる。
 
 ## 読み取り専用調査
 
@@ -39,7 +29,7 @@ WXT 拡張を Claude Code で進めるときの依頼テンプレート。禁止
 完了条件: 調査結果だけを箇条書きで出し、次の作業提案を 3 つまで示して停止してください。
 ```
 
-代替: スキル同梱の `scripts/inspect-wxt-project.py` を WXT プロジェクトルートに対して実行する。
+代替: スキル同梱の `scripts/resolve_skill_dir.py` でルートを確定し、`scripts/inspect-wxt-project.py` を WXT プロジェクトルートに対して実行する。
 
 ## 計画のみ（実装前）
 

@@ -114,7 +114,8 @@ def main(argv: list[str]) -> int:
     wxt_version = all_deps.get("wxt") or all_deps.get("@wxt-dev/module-react")
     wxt_configs = find_wxt_config(root)
     entrypoints = list_entrypoints(root)
-    web_ext_config = (root / "web-ext.config.ts").exists()
+    web_ext_names = ["web-ext.config.ts", "web-ext.config.js", "web-ext.config.mjs"]
+    web_ext_found = [name for name in web_ext_names if (root / name).exists()]
     src_dir = (root / "src").is_dir()
 
     print("WXTプロジェクト調査結果")
@@ -125,7 +126,7 @@ def main(argv: list[str]) -> int:
     print(f"UIフレームワーク: {detect_ui_framework(all_deps)}")
     print(f"messaging: {detect_messaging(all_deps)}")
     print(f"WXT設定ファイル: {', '.join(wxt_configs) if wxt_configs else '<未検出>'}")
-    print(f"web-ext.config.ts: {'あり' if web_ext_config else 'なし'}")
+    print(f"web-ext.config.*: {', '.join(web_ext_found) if web_ext_found else 'なし'}")
     print(f"src/ ディレクトリ: {'あり' if src_dir else 'なし'}")
     print(f"manifest定義の想定場所: {manifest_definition_hint(wxt_configs)}")
     print(f"entrypoints: {', '.join(entrypoints) if entrypoints else '<未検出>'}")

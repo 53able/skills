@@ -2,13 +2,7 @@
 
 この参照は、WXT開発時に仕様確認が必要な場合だけ読む。
 
-コマンド例は WXT 公式ドキュメントに基づく。スキル同梱物のローカル実行検証は別途必要な場合がある。
-
-## チーム既定
-
-- UI: React
-- ブラウザ: Chrome only
-- messaging: webext-bridge
+コマンド例は WXT 公式ドキュメントに基づく。スキル同梱物のローカル実行検証は別途必要な場合がある。チーム既定は `SKILL.md` に準ずる。
 
 ## 主要概念
 
@@ -133,6 +127,22 @@ export default defineConfig({
 
 permissionsは最小化する。対象ブラウザ、manifest version、実際に使うAPIによって必要権限が異なる。
 
+## messaging（webext-bridge）
+
+新規実装の既定は `webext-bridge`。`npm install webext-bridge` は人間レビュー後に行う。
+
+```ts
+import { onMessage, sendMessage } from 'webext-bridge';
+
+// background（defineBackground コールバック内）
+onMessage('ping', async () => 'pong');
+
+// popup または content script（main(ctx) 内）
+const reply = await sendMessage('ping', undefined, 'background');
+```
+
+entrypoint 間の通信先は `background` / `popup` / `content-script` などの論理ターゲットで指定する。詳細は [webext-bridge](https://github.com/antfu/webext-bridge) を参照。
+
 ## content script UI
 
 - `createIntegratedUi`: ページDOMへ統合。CSSやイベントの分離は弱い。
@@ -185,7 +195,7 @@ export default defineContentScript({
 - WXT Extension APIs: https://wxt.dev/guide/essentials/extension-apis
 - WXT Storage: https://wxt.dev/guide/essentials/storage.html
 - WXT Messaging: https://wxt.dev/guide/essentials/messaging
-- messaging が必要な新規実装では webext-bridge を第一候補とする。
+- webext-bridge: https://github.com/antfu/webext-bridge
 - WXT CLI: https://wxt.dev/api/cli/wxt
 - Claude Code プロンプト例: references/claude-code-prompts.md（スキル同梱）
 - 参考記事: https://zenn.dev/53able/articles/7e99295a28a75d

@@ -19,11 +19,14 @@ description: WXTを使ったブラウザ拡張開発を支援する。プロジ�
 
 **Step 1: 作業対象を確認する**
 1. WXTプロジェクトの新規作成か、既存プロジェクトの変更かを判定する。
-2. 既存プロジェクトの場合、スキル同梱の `scripts/inspect-wxt-project.py` を WXT プロジェクトルートに対して実行する。
+2. 既存プロジェクトの場合、スキル同梱の `scripts/resolve_skill_dir.py` でスキルルートを確定し、`scripts/inspect-wxt-project.py` を WXT プロジェクトルートに対して実行する。候補パスは [vercel-labs/skills](https://github.com/vercel-labs/skills) の Supported Agents に追従する。
 
 ```bash
-python ~/.agents/skills/wxt-extension-development/scripts/inspect-wxt-project.py /path/to/wxt-project
+WXT_SKILL_DIR=$(python3 ~/.cursor/skills/wxt-extension-development/scripts/resolve_skill_dir.py)
+python3 "$WXT_SKILL_DIR/scripts/inspect-wxt-project.py" /path/to/wxt-project
 ```
+
+リポジトリクローン内では `skills/wxt-extension-development/scripts/resolve_skill_dir.py` を指定する。`WXT_EXTENSION_DEVELOPMENT_SKILL_DIR` 環境変数でもパスを直接指定できる。
 
    `package.json`、`wxt.config.*`、`web-ext.config.ts`、`entrypoints/`、UI フレームワーク、messaging、生成物ディレクトリの状態を確認する。
 3. 新規作成の場合、パッケージマネージャ、React テンプレート、Chrome、生成先ディレクトリを明示してから `wxt init` の実行計画を作る。
@@ -74,7 +77,7 @@ python ~/.agents/skills/wxt-extension-development/scripts/inspect-wxt-project.py
    - 型チェックscriptがある場合: `npm run typecheck` など
    - build: `npm run build` または該当パッケージマネージャの build script
    - zip配布対象: `npm run zip`
-3. build後に `.output/chrome-mv3/manifest.json`（またはプロジェクトの Chrome 出力パス）を確認し、permissions、host permissions、content scripts、background、action/popupが意図通り生成されたか点検する。
+3. build後に `.output/` 配下の Chrome 用 manifest（例: `chrome-mv3/manifest.json`）を確認し、permissions、host permissions、content scripts、background、action/popupが意図通り生成されたか点検する。出力パスは WXT バージョンにより異なる場合がある。
 4. ブラウザ確認項目を報告する。dev mode での読み込み、popup表示、content scriptの対象URL限定、backgroundイベント、console error、権限表示、拡張再読み込み後の挙動を含める。
 5. 失敗時はエラーログを要約し、関係ないリファクタや依存追加へ飛ばず、最小修正案を出す。
 
@@ -86,6 +89,7 @@ python ~/.agents/skills/wxt-extension-development/scripts/inspect-wxt-project.py
 
 ## エラー処理
 
+* スキル同梱の `scripts/resolve_skill_dir.py` がスキルを見つけられない場合、`npx skills add 53able/skills --skill wxt-extension-development -g` でインストールするか、`WXT_EXTENSION_DEVELOPMENT_SKILL_DIR` を設定する。
 * スキル同梱の `scripts/inspect-wxt-project.py` が `package.json が見つかりません` を返す場合、WXT プロジェクトルートを確認し、既存プロジェクトではなく新規作成フローへ切り替える。
 * `wxt.config.*` が見つからない場合、`package.json` のdependencies/devDependenciesに `wxt` があるか確認する。なければWXTプロジェクトと断定しない。
 * buildで `browser is not defined`、`document is not defined`、`window is not defined` が出る場合、entrypointトップレベルの実行時API呼び出しを探し、callbackまたは`main(ctx)`内へ移す。
