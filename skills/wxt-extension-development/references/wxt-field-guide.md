@@ -2,6 +2,14 @@
 
 この参照は、WXT開発時に仕様確認が必要な場合だけ読む。
 
+コマンド例は WXT 公式ドキュメントに基づく。スキル同梱物のローカル実行検証は別途必要な場合がある。
+
+## チーム既定
+
+- UI: React
+- ブラウザ: Chrome only
+- messaging: webext-bridge
+
 ## 主要概念
 
 - WXTはWeb Extension開発のためのフレームワークで、主要ブラウザ、TypeScript、Vite、HMR、ファイルベースentrypointを扱う。
@@ -177,5 +185,7 @@ export default defineContentScript({
 - WXT Extension APIs: https://wxt.dev/guide/essentials/extension-apis
 - WXT Storage: https://wxt.dev/guide/essentials/storage.html
 - WXT Messaging: https://wxt.dev/guide/essentials/messaging
+- messaging が必要な新規実装では webext-bridge を第一候補とする。
 - WXT CLI: https://wxt.dev/api/cli/wxt
+- Claude Code プロンプト例: references/claude-code-prompts.md（スキル同梱）
 - 参考記事: https://zenn.dev/53able/articles/7e99295a28a75d

@@ -1,6 +1,7 @@
 # WXTプロジェクト向けガイドライン
 
 - このプロジェクトはWXT製のブラウザ拡張である。
+- UI は React、対象ブラウザは Chrome、messaging は webext-bridge を既定とする。
 - `.wxt/` と `.output/` 配下の生成物を編集しない。
 - 生成された `manifest.json` を直接編集しない。必要な変更は `wxt.config.*` またはentrypoint設定へ反映する。
 - `browser.*`、`document`、`window` などの実行時APIをJS/TS entrypointのトップレベルで使わない。
