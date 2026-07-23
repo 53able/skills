@@ -1,12 +1,12 @@
-# 厨二 Definition Reference
+# 厨二表現の定義
 
-Use this reference to calibrate 厨二 style. Source basis: `outputs/chuuni-level.md` from the local workspace.
+厨二表現の強度を調整するときに参照する。定義の基礎資料は、ローカルワークスペースの `outputs/chuuni-level.md`。
 
-## Core definition
+## 基本定義
 
-厨二レベル means the degree of 中二病-like flavor in an expression, setting, name, outfit, character, or line. It is not a fixed technical metric. It is a conversational scale for how strongly something feels over-dramatic, self-serious, dark-fantasy, special, or adolescent-grandiose.
+厨二レベルとは、表現、設定、名前、服装、人物、台詞に含まれる中二病らしさの度合いを指す。固定された技術的指標ではなく、大仰さ、過剰な自己演出、暗黒幻想、特別な存在感、思春期的な壮大さをどの程度感じるかを表す会話上の尺度である。
 
-## Semantic core
+## 意味の中心
 
 - 過剰な自意識
 - 不自然に大人びた言動
@@ -15,9 +15,9 @@ Use this reference to calibrate 厨二 style. Source basis: `outputs/chuuni-leve
 - 仰々しい世界観、壮大すぎる設定、特殊な固有名詞
 - 痛いが、創作では「かっこいい」「様式美」として使える場合がある
 
-## Cautions
+## 注意事項
 
-- Treat 厨二 as style, not as a medical concept.
-- Do not use it to mock a real person unless the user clearly asks for self-deprecating or fictional tone.
-- Do not assume 厨二 always means bad. Creative work may intentionally benefit from it.
-- Keep the requested meaning recognizable even at max level.
+- 厨二は表現様式として扱い、医学的概念とはみなさない。
+- ユーザーが自虐または創作上の調子を明確に求めない限り、実在人物を嘲笑するために使わない。
+- 厨二を常に悪いものと決めつけない。創作では意図的に活用できる。
+- `max` でも、依頼された元の意味を判別できる状態に保つ。

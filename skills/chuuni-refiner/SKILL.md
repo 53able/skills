@@ -1,53 +1,53 @@
 ---
 name: chuuni-refiner
-description: Refines Japanese prose into a requested 厨二 level by adding controlled dark-fantasy grandiosity, special-existence framing, dramatic naming, and over-the-top self-seriousness while preserving intent. Use when transforming drafts, character lines, skill names, game text, slogans, or prompts into low, medium, high, or max 厨二 style. Don't use for factual reports, legal text, medical advice, formal business writing, or cases where naturalness, accessibility, or citation fidelity matters more than stylization.
+description: 日本語の意図を保ちながら、暗黒幻想的な大仰さ、特別な存在感、劇的な命名、過剰な自己演出を加え、指定された厨二レベルへ整える。草稿、キャラクターの台詞、スキル名、ゲーム内テキスト、標語、プロンプトを low、medium、high、max の厨二表現へ変換するときに使う。事実報告、法律文書、医療助言、正式なビジネス文書、自然さ・アクセシビリティ・引用の正確さを演出より優先する文章には使わない。
 ---
 
-# 厨二 Refiner
+# 厨二表現リファイナー
 
-Transform Japanese text into a chosen 厨二 level while preserving the user's core meaning, constraints, and requested format.
+ユーザーの中心的な意図、制約、指定形式を保ちながら、日本語の文章を選択した厨二レベルへ変換する。
 
-## Workflow
+## ワークフロー
 
-1. **Extract the request.** Identify the source text, target audience, output format, and desired 厨二 level.
-2. **Infer the level if omitted.** Use `medium` for general requests like「厨二っぽくして」. Use `max` only when the user asks for「全開」「MAX」「限界」「盛って」.
-3. **Load the definition when needed.** Read `references/chuuni-definition.md` when the task asks what 厨二 means, when calibrating level, or when resolving borderline tone.
-4. **Get level knobs.** Run `python3 scripts/level-guide.py --level <low|medium|high|max>` to obtain the permitted intensity profile.
-5. **Preserve intent.** Keep factual content, names, relationships, required terms, length limits, and user-provided structure unless the user asks for free adaptation.
-6. **Refine the text.** Add only the amount of dark-fantasy grandiosity, special-existence framing, dramatic diction, symbolic nouns, and self-serious rhythm allowed by the selected level.
-7. **Avoid unsupported facts.** Do not add real-world claims, citations, technical claims, credentials, prices, dates, or measurable results unless present in the source text.
-8. **Check harm and context.** Avoid turning personal insults, harassment, legal/medical advice, or factual reports into manipulative or misleading stylized text. Offer a safer creative version when needed.
-9. **Return the result.** Provide the refined text first. Add a short note only when level, preservation, or safety constraints materially changed the output.
+1. **依頼を読み取る。** 元の文章、想定読者、出力形式、希望する厨二レベルを特定する。
+2. **未指定ならレベルを補う。** 「厨二っぽくして」のような一般的な依頼には `medium` を使う。`max` は「全開」「MAX」「限界」「盛って」など、過剰な演出を明示された場合に限る。
+3. **必要なら定義を確認する。** 厨二の意味を問われたとき、強度を調整するとき、境界的な表現を判断するときは、スキル同梱の `references/chuuni-definition.md` を読む。
+4. **強度設定を取得する。** スキル同梱の `scripts/level-guide.py` を `python3 scripts/level-guide.py --level <low|medium|high|max>` で実行し、許容される強度設定を取得する。
+5. **意図を保つ。** 自由な翻案を求められない限り、事実、固有名詞、関係性、必須語句、文字数制限、ユーザーが指定した構造を維持する。
+6. **文章を整える。** 選択したレベルで許される範囲だけ、暗黒幻想的な大仰さ、特別な存在感、劇的な語彙、象徴語、自己演出的なリズムを加える。
+7. **根拠のない事実を足さない。** 元の文章にない現実世界の主張、引用、技術的主張、資格、価格、日付、測定可能な成果を追加しない。
+8. **有害性と文脈を確認する。** 個人への侮辱、嫌がらせ、法律・医療上の助言、事実報告を、操作的または誤解を招く演出へ変えない。必要なら、安全な創作表現を代案として示す。
+9. **結果を返す。** 変換後の文章を最初に示す。レベル、意味の保持、安全上の制約が結果へ大きく影響した場合だけ、短い注記を添える。
 
-## Level calibration
+## レベル調整
 
-Use these defaults unless `scripts/level-guide.py` gives more specific guidance:
+スキル同梱の `scripts/level-guide.py` がより具体的な指示を返さない限り、次を既定値とする。
 
-- `low`: Slightly dramatic. Keep natural Japanese. Add one or two sharper words.
-- `medium`: Clearly 厨二. Add fate, shadow, awakening, oath, forbidden, or sealed-force motifs sparingly.
-- `high`: Strong 厨二. Use ornate compounds, dramatic pauses, worldline/fracture/contract imagery, and heightened self-seriousness.
-- `max`: Deliberately excessive. Use grand names, sealed powers, apocalypse-scale metaphors, archaic rhythm, and theatrical declarations while keeping the base meaning recognizable.
+- `low`: わずかに劇的。自然な日本語を保ち、印象の強い語を1〜2個加える。
+- `medium`: はっきり厨二と分かる強度。運命、影、覚醒、誓約、禁忌、封印された力などのモチーフを控えめに加える。
+- `high`: 強い厨二表現。装飾的な複合語、劇的な間、世界線・断裂・契約のイメージ、強い自己演出を使う。
+- `max`: 意図的に過剰。元の意味を判別できる範囲で、壮大な固有名、封印された力、終末規模の比喩、古風なリズム、芝居がかった宣言を使う。
 
-## Transformation rules
+## 変換規則
 
-1. **Name the hidden force.** Convert plain motivation into an inner flame, sealed will, oath, fragment, resonance, or forbidden protocol.
-2. **Raise stakes metaphorically.** Turn ordinary difficulty into trial, covenant, threshold, rupture, fate, or abyss without inventing concrete events.
-3. **Sharpen rhythm.** Use short declarations, controlled pauses, and sentence-final force. Avoid endless ornament.
-4. **Choose motifs consistently.** Pick one motif family per output: darkness, stars, seals, ancient contract, forbidden archive, blade, divine/fallen, or machine-magic.
-5. **Keep readability.** Preserve the user's communicative goal. If the result becomes unreadable, lower one intensity step.
-6. **Respect genre.** For game text, prioritize names and battle cries. For essays, add subtle metaphors. For slogans, keep punch and brevity. For dialogue, preserve speaker personality.
+1. **隠れた力に名を与える。** 素朴な動機を、内なる炎、封じられた意志、誓約、断片、共鳴、禁断の手順などへ置き換える。
+2. **比喩で重大さを高める。** 具体的な出来事を捏造せず、日常的な困難を試練、盟約、境界、断裂、運命、深淵などに見立てる。
+3. **リズムを研ぎ澄ます。** 短い宣言、制御された間、力のある文末を使う。装飾を際限なく重ねない。
+4. **モチーフを統一する。** 1つの出力では、闇、星、封印、古代の契約、禁断の書庫、刃、神聖・堕天、機械魔術のいずれか1系統を選ぶ。
+5. **読みやすさを保つ。** ユーザーの伝達目的を維持する。読みにくくなった場合は、強度を1段階下げる。
+6. **ジャンルを尊重する。** ゲーム文では名称と決め台詞、随筆では控えめな比喩、標語では勢いと簡潔さを優先する。会話文では話者の人格を保つ。
 
-## Output patterns
+## 出力形式
 
-- For a single sentence: return one refined sentence.
-- For alternatives: return 3 variants labeled by level or mood.
-- For long text: return the rewritten text, then a compact change note.
-- For naming requests: return candidates with kana/romaji only when requested.
+- 1文の依頼: 変換後の1文だけを返す。
+- 複数案の依頼: レベルまたは雰囲気を添えて3案返す。
+- 長文の依頼: 変換後の全文を返し、その後に簡潔な変更メモを添える。
+- 命名の依頼: かな表記やローマ字表記は求められた場合だけ添える。
 
-## Error Handling
+## エラー処理
 
-- If no source text is provided, ask for the text to refine and the desired level.
-- If the requested level is ambiguous, choose `medium` and state the assumption in one line.
-- If the text must remain factual or formal, refuse excessive stylization and offer `low` level only.
-- If `scripts/level-guide.py` fails, use the Level calibration section and mention that script validation was unavailable.
-- If the user requests abusive targeting, transform the output into fictional self-directed or non-targeted dramatic wording.
+- 元の文章がない場合は、変換対象の文章と希望レベルを尋ねる。
+- 希望レベルが曖昧な場合は `medium` を選び、その前提を1行で示す。
+- 事実性や格式を保つ必要がある文章では、過剰な演出を断り、`low` だけを提案する。
+- スキル同梱の `scripts/level-guide.py` が失敗した場合は「レベル調整」の既定値を使い、スクリプトで検証できなかったことを明記する。
+- 特定人物への攻撃を求められた場合は、架空の対象、自虐的な表現、対象を限定しない劇的表現のいずれかへ変換する。
