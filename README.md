@@ -99,6 +99,12 @@ WXT を使ったブラウザ拡張の設計・実装・検証を支援するス�
 - **pr-conflict-resolve** — ローカル CLI（git / gh）を使って GitHub PR のコンフリクトを解消する。merge vs rebase の戦略選択、コンフリクトマーカーの解消、安全な復旧手順、プッシュ後の PR 確認チェックリストまでをガイドする。
 - **pr-evidence-capture** — UI 変更や状態遷移を伴う PR に、E2E テスト計画・操作後スクリーンショット・検証結果を確認エビデンスとして残す。`gh` で画像をアップロードし、Chrome DevTools MCP で画面を操作・撮影し、PR コメントへ投稿する。
 
+## セキュリティ・プライバシー
+
+画像や文書を公開・共有・LLM投入する前に機密情報を除去するスキル。
+
+- **image-pii-masking** — 画像内の文字として写り込んだ氏名・住所・電話番号・APIキー等を OCR(Tesseract)と Presidio、日本語向け正規表現で検出し、不透明な塗りつぶし・再OCR検証・EXIF除去まで実行する。`scripts/mask_image.py` と `scripts/selftest.py` を同梱。
+
 ## ドキュメント・変換
 
 LLM 投入前にローカル文書を扱いやすい形式へ変換するスキル。
@@ -169,6 +175,7 @@ npx skills add 53able/skills --skill pr-conflict-resolve
 npx skills add 53able/skills --skill pr-evidence-capture
 npx skills add 53able/skills --skill pdf-markdown-local
 npx skills add 53able/skills --skill csv-llm-edit
+npx skills add 53able/skills --skill image-pii-masking
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
 npx skills add 53able/skills --skill primitive-reimpl
@@ -215,6 +222,7 @@ npx skills add 53able/skills --skill pr-conflict-resolve -g -a cursor
 npx skills add 53able/skills --skill pr-evidence-capture -g -a cursor
 npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
 npx skills add 53able/skills --skill csv-llm-edit -g -a cursor
+npx skills add 53able/skills --skill image-pii-masking -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
@@ -264,6 +272,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/pr-conflict-res
 npx skills add https://github.com/53able/skills/tree/main/skills/pr-evidence-capture -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pdf-markdown-local -g
 npx skills add https://github.com/53able/skills/tree/main/skills/csv-llm-edit -g
+npx skills add https://github.com/53able/skills/tree/main/skills/image-pii-masking -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
