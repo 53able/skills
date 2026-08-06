@@ -111,6 +111,7 @@ LLM 投入前にローカル文書を扱いやすい形式へ変換するスキ�
 
 - **pdf-markdown-local** — ローカル PDF を Microsoft MarkItDown と uv で Markdown へ変換し、トークン効率よく LLM に渡す。`scripts/convert_pdf.py` を同梱。
 - **csv-llm-edit** — CSV ファイルを Python で編集し、表形式データをトークン効率のよい TOON 形式へ変換して LLM に渡す。TOON は JSON 比で 30〜60% のトークン削減が見込める。`scripts/edit_csv.py` / `scripts/csv_to_toon.py` / `scripts/toon_to_csv.py` を同梱。
+- **backlog-text-formatter** — Backlog（Nulab）Wiki 記法と HTML を相互変換する。課題/Wikiリンク、太字・斜体・打消し線・色、見出し、リスト、テーブル、コードブロック、リビジョンリンクなど公式記法一式に対応。`scripts/backlog_to_html.py` を同梱。
 
 ## エージェント・LLM 基盤
 
@@ -175,6 +176,7 @@ npx skills add 53able/skills --skill pr-conflict-resolve
 npx skills add 53able/skills --skill pr-evidence-capture
 npx skills add 53able/skills --skill pdf-markdown-local
 npx skills add 53able/skills --skill csv-llm-edit
+npx skills add 53able/skills --skill backlog-text-formatter
 npx skills add 53able/skills --skill image-pii-masking
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
@@ -222,6 +224,7 @@ npx skills add 53able/skills --skill pr-conflict-resolve -g -a cursor
 npx skills add 53able/skills --skill pr-evidence-capture -g -a cursor
 npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
 npx skills add 53able/skills --skill csv-llm-edit -g -a cursor
+npx skills add 53able/skills --skill backlog-text-formatter -g -a cursor
 npx skills add 53able/skills --skill image-pii-masking -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
@@ -272,6 +275,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/pr-conflict-res
 npx skills add https://github.com/53able/skills/tree/main/skills/pr-evidence-capture -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pdf-markdown-local -g
 npx skills add https://github.com/53able/skills/tree/main/skills/csv-llm-edit -g
+npx skills add https://github.com/53able/skills/tree/main/skills/backlog-text-formatter -g
 npx skills add https://github.com/53able/skills/tree/main/skills/image-pii-masking -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
