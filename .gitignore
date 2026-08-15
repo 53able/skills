@@ -21,6 +21,9 @@ results/
 outputs/
 evidence/
 
+# OMX runtime state
+.omc/
+
 # Credentials and local secrets
 .validation-secrets/
 .env
