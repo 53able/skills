@@ -126,6 +126,12 @@ LLM 投入前にローカル文書を扱いやすい形式へ変換するスキ�
 
 - **primitive-reimpl** — 既存コードから振る舞いと推定仕様を抽出し、プリミティブ能力へ分解して必要な部分だけ新モジュールとして再実装する。仕様マップ検証スクリプトとテンプレートを同梱。
 
+## 技術検証環境
+
+Apple Container上で技術的主張を反証可能なケース行列に変換し、隔離実行して検証するスキル。
+
+- **apple-container-validation** — Apple Container上に再現可能な技術検証環境を構築し、コンテキストから論点・反証条件・オラクル・ケース行列を定義して、独立ケースを安全な上限内で並列実行し、ログと来歴を伴う Markdown レポートへ集約する。macOS 26 (Apple silicon) と Apple Container CLI が必要。
+
 ## インストール
 
 このリポジトリを GitHub に public で公開後、以下のコマンドでインストールできる。
@@ -181,6 +187,7 @@ npx skills add 53able/skills --skill image-pii-masking
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
 npx skills add 53able/skills --skill primitive-reimpl
+npx skills add 53able/skills --skill apple-container-validation
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -229,6 +236,7 @@ npx skills add 53able/skills --skill image-pii-masking -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
+npx skills add 53able/skills --skill apple-container-validation -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -280,6 +288,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/image-pii-maski
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
+npx skills add https://github.com/53able/skills/tree/main/skills/apple-container-validation -g
 ```
 
 ## スキル構成
