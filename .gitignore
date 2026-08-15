@@ -4,7 +4,30 @@ node_modules/
 # Python
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local virtual environments
+.venv/
+venv/
 
 tmp/
 .omc/
 .omx/
+
+# Generated validation artifacts (apple-container-validation)
+results/
+outputs/
+evidence/
+
+# Credentials and local secrets
+.validation-secrets/
+.env
+.env.*
+!.env.example
+
+# Temporary editor files
+*.tmp
+*.swp
+*~
