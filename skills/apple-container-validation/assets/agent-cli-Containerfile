@@ -1,0 +1,28 @@
+FROM node:22-slim
+
+ARG CLAUDE_CODE_VERSION=2.1.233
+ARG CODEX_CLI_VERSION=0.147.0
+ARG TYPESCRIPT_VERSION=7.0.2
+ARG TSX_VERSION=4.23.12
+ARG PINO_VERSION=10.3.1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates git openssh-client ripgrep \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install --global \
+    "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
+    "@openai/codex@${CODEX_CLI_VERSION}" \
+    "typescript@${TYPESCRIPT_VERSION}" \
+    "tsx@${TSX_VERSION}" \
+    "pino@${PINO_VERSION}"
+
+RUN useradd --create-home --shell /bin/bash agent \
+    && mkdir -p /workspace /evidence \
+    && chown -R agent:agent /workspace /evidence
+
+USER agent
+WORKDIR /workspace
+ENV HOME=/home/agent
+
+CMD ["bash"]

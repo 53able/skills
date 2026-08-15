@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "slug": "example-validation",
+  "claim": "置き換える: 検証する技術的主張",
+  "hypothesis": "置き換える: 条件と期待結果を含む反証可能な仮説",
+  "falsificationCriteria": [
+    {
+      "id": "criterion-main",
+      "description": "置き換える: この観察が得られたら仮説を棄却する"
+    }
+  ],
+  "image": {
+    "tag": "alpine:3.22"
+  },
+  "defaults": {
+    "network": "none",
+    "cpus": 1,
+    "memory": "1G",
+    "timeoutSeconds": 120,
+    "retries": 0,
+    "repeats": 1,
+    "maxConcurrency": 8,
+    "readOnlyRoot": true,
+    "allowWritableMounts": false
+  },
+  "mounts": [],
+  "cases": [
+    {
+      "id": "target-basic",
+      "group": "target",
+      "description": "代表的な正常系",
+      "relation": "support",
+      "criterionIds": [
+        "criterion-main"
+      ],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'target-ok\\n' | tee /evidence/result.txt"
+      ],
+      "oracle": {
+        "exitCode": 0,
+        "stdoutContains": [
+          "target-ok"
+        ],
+        "stderrNotContains": [
+          "panic"
+        ],
+        "artifacts": [
+          {
+            "path": "result.txt",
+            "exists": true,
+            "contains": "target-ok"
+          }
+        ]
+      }
+    },
+    {
+      "id": "boundary-empty",
+      "group": "boundary",
+      "description": "空入力の境界系",
+      "relation": "neutral",
+      "criterionIds": [],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'boundary-ok\\n'"
+      ],
+      "oracle": {
+        "exitCode": 0,
+        "stdoutContains": [
+          "boundary-ok"
+        ]
+      }
+    },
+    {
+      "id": "boundary-upper",
+      "group": "boundary",
+      "description": "上限値の境界系",
+      "relation": "neutral",
+      "criterionIds": [],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'upper-boundary-ok\\n'"
+      ],
+      "oracle": {
+        "exitCode": 0,
+        "stdoutContains": [
+          "upper-boundary-ok"
+        ]
+      }
+    },
+    {
+      "id": "failure-expected-exit",
+      "group": "failure",
+      "description": "期待した異常終了を正しく観測する",
+      "relation": "support",
+      "criterionIds": [],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'expected-error\\n' >&2; exit 7"
+      ],
+      "oracle": {
+        "exitCode": 7,
+        "stderrContains": [
+          "expected-error"
+        ]
+      }
+    },
+    {
+      "id": "negative-unrelated",
+      "group": "negative",
+      "description": "対象外を誤判定しない負例",
+      "relation": "neutral",
+      "criterionIds": [],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'negative-ok\\n'"
+      ],
+      "oracle": {
+        "exitCode": 0,
+        "stdoutContains": [
+          "negative-ok"
+        ]
+      }
+    },
+    {
+      "id": "negative-similar-wording",
+      "group": "negative",
+      "description": "語彙は似ているが対象外の負例",
+      "relation": "neutral",
+      "criterionIds": [],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'similar-but-unrelated-ok\\n'"
+      ],
+      "oracle": {
+        "exitCode": 0,
+        "stdoutContains": [
+          "similar-but-unrelated-ok"
+        ]
+      }
+    }
+  ]
+}
