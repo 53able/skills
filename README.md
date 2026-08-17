@@ -34,6 +34,7 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 - **sentence-logic-guard** — 文と文のつながりを点検し、直前の文が残した不足を次の文が補っているかを読者視点で確認する。文ペア抽出用の `scripts/sentence_pairs.py` を同梱。
 - **logical-consistency-reviewer** — Why So / So What / MECE の観点で文章・記事・レポート・企画書の論点飛躍・矛盾・根拠不足を検出する。
 - **chuuni-refiner** — 日本語文章を意図を保ったまま指定の厨二レベル（low/medium/high/max）へ、暗黒ファンタジー的な大仰さと特別な存在感を加えて変換する。レベル別の強度を決める `scripts/level-guide.py` を同梱。
+- **presentation-first-tech-blog** — 調査済みの技術材料を短いナラティブ・デッキで構造化し、スピーカーノートで説明の欠落を検出してから、単体で理解できるWeb記事へ再設計する。
 
 ## プレゼンテーション
 
@@ -161,6 +162,7 @@ npx skills add 53able/skills --skill natural-expression-refiner
 npx skills add 53able/skills --skill sentence-logic-guard
 npx skills add 53able/skills --skill logical-consistency-reviewer
 npx skills add 53able/skills --skill chuuni-refiner
+npx skills add 53able/skills --skill presentation-first-tech-blog
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds
 npx skills add 53able/skills --skill zukai-creator
 npx skills add 53able/skills --skill meeting-to-video
@@ -210,6 +212,7 @@ npx skills add 53able/skills --skill natural-expression-refiner -g -a cursor
 npx skills add 53able/skills --skill sentence-logic-guard -g -a cursor
 npx skills add 53able/skills --skill logical-consistency-reviewer -g -a cursor
 npx skills add 53able/skills --skill chuuni-refiner -g -a cursor
+npx skills add 53able/skills --skill presentation-first-tech-blog -g -a cursor
 npx skills add 53able/skills --skill presentation-zen-garr-reynolds -g -a cursor
 npx skills add 53able/skills --skill zukai-creator -g -a cursor
 npx skills add 53able/skills --skill meeting-to-video -g -a cursor
@@ -262,6 +265,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/natural-express
 npx skills add https://github.com/53able/skills/tree/main/skills/sentence-logic-guard -g
 npx skills add https://github.com/53able/skills/tree/main/skills/logical-consistency-reviewer -g
 npx skills add https://github.com/53able/skills/tree/main/skills/chuuni-refiner -g
+npx skills add https://github.com/53able/skills/tree/main/skills/presentation-first-tech-blog -g
 npx skills add https://github.com/53able/skills/tree/main/skills/presentation-zen-garr-reynolds -g
 npx skills add https://github.com/53able/skills/tree/main/skills/zukai-creator -g
 npx skills add https://github.com/53able/skills/tree/main/skills/meeting-to-video -g
