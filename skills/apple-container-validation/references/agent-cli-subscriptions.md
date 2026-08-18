@@ -140,7 +140,7 @@ install -m 600 "${CODEX_HOME:-$HOME/.codex}/auth.json" \
 
 - Codexは必要に応じて`auth.json`を更新するため、書き込み可能マウントを使う。
 - 同じ`auth.json`を複数コンテナや複数マシンから同時使用しない。スキルは共有書き込みmountを検出すると並列度を1へ落とす。
-- `auth.json`が実行中に更新されるため、この方式のrunを`--resume`しない。新しいrun-idで再実行する。
+- `auth.json`が実行中に更新されるため、この方式のrunを`--resume`しない。さらに、access token方式を含め`inheritEnv`を1件でも使うrunは、資格情報や設定値を来歴へ保存・比較しないため`--resume`できない。いずれも新しいrun-idで再実行する。
 - 実行後に更新された`auth.json`を信頼済み保存先へ戻す必要がある場合は、人間が秘密として扱う。結果ディレクトリへコピーしない。
 - `OPENAI_API_KEY`、`CODEX_API_KEY`を渡さない。
 
@@ -165,7 +165,7 @@ Claude CodeとCodexの結果を比較する場合、同じ入力、同じオラ�
 
 ## エラー処理
 
-- subscription entitlementがない場合は`Blocked: subscription access unavailable`とする。
+- subscription entitlementがない場合は`BLOCKED: subscription access unavailable`とする。
 - Claude CodeでAPIキー認証が検出された場合は実行を止める。
 - Codexで`codex login status`がChatGPTログインを示さない場合は実行を止める。
 - 401、403、device-code無効、ブラウザcallback失敗は認証問題として記録し、対象実装の失敗へ数えない。

@@ -56,6 +56,26 @@
       }
     },
     {
+      "id": "criterion-main-observed",
+      "group": "failure",
+      "description": "REPLACE-ME（説明用）: command/oracleを対象固有の棄却条件へ置き換える。未変更で実行すると意図的にFALSIFIEDになる",
+      "relation": "falsify",
+      "criterionIds": [
+        "criterion-main"
+      ],
+      "command": [
+        "sh",
+        "-lc",
+        "printf 'falsification-observed\\n'"
+      ],
+      "oracle": {
+        "exitCode": 0,
+        "stdoutContains": [
+          "falsification-observed"
+        ]
+      }
+    },
+    {
       "id": "boundary-empty",
       "group": "boundary",
       "description": "空入力の境界系",
@@ -94,8 +114,8 @@
     {
       "id": "failure-expected-exit",
       "group": "failure",
-      "description": "期待した異常終了を正しく観測する",
-      "relation": "support",
+      "description": "検証ハーネスが期待した異常終了を判定できるか確認する",
+      "relation": "neutral",
       "criterionIds": [],
       "command": [
         "sh",

@@ -31,6 +31,7 @@ container image inspect IMAGE
 
 - Apple ContainerはmacOS上でLinuxコンテナを実行する。macOSネイティブGUIの再現環境ではない。
 - `container run` の引数はイメージ名より前をランタイムオプション、後ろをコンテナ内コマンドとして扱う。
+- `container run`はpayloadの終了コードを返すが、起動・設定失敗とpayloadの同じ非ゼロ終了コードを機械可読に区別する公開契約は確認できない。期待された非ゼロpayloadを壊すため、非ゼロ終了を一律に基盤エラーとは扱わず、stderr文字列のヒューリスティック分類もしない。起動・設定失敗の終了コードや出力がpayload用オラクルへ偶然一致すると`oracle-fail`だけでなく`oracle-pass`にもなり、仮説評価へ影響し得る。claim-bearing caseではpayload固有のstdout markerまたは`exists: true`を明示したartifactも判定し、stderrとApple Containerのsystem logを手作業で確認する。
 - `--network none` を既定にし、通信が必要なケースだけ明示的に変更する。
 - `--read-only` と `--tmpfs /tmp` を組み合わせ、証跡だけを `/evidence` へ書く。
 - タイムアウト後にコンテナが残った場合だけ、対象名を指定して `container delete --force NAME` を使う。`--all` は使わない。
@@ -42,3 +43,4 @@ container image inspect IMAGE
 - Repository: https://github.com/apple/container
 - How-to: https://github.com/apple/container/blob/main/docs/how-to.md
 - Technical overview: https://github.com/apple/container/blob/main/docs/technical-overview.md
+- `container run` source: https://github.com/apple/container/blob/main/Sources/ContainerCommands/Container/ContainerRun.swift

@@ -8,12 +8,14 @@ import os
 import posixpath
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from typing import Any
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,79}$")
 MEM_RE = re.compile(r"^[1-9][0-9]*(?:K|M|G|T|P)?$")
 NETWORK_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$")
+ENV_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 ROOT_KEYS = {"version", "slug", "claim", "hypothesis", "falsificationCriteria", "image", "defaults", "mounts", "cases"}
 IMAGE_KEYS = {"tag", "context", "file", "pull"}
 DEFAULT_KEYS = {"network", "cpus", "memory", "timeoutSeconds", "retries", "repeats", "maxConcurrency", "readOnlyRoot", "allowWritableMounts"}
@@ -32,18 +34,88 @@ ALLOWED_ORACLES = {
 }
 
 
+class CliArgumentError(ValueError):
+    """argparse failure that never writes argv or usage directly."""
+
+
+class SilentArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise CliArgumentError("invalid arguments")
+
+    def exit(self, status: int = 0, message: str | None = None) -> None:
+        if status == 0:
+            raise CliArgumentError("help requested")
+        raise CliArgumentError("invalid arguments")
+
+
 def fail(errors: list[str], message: str) -> None:
     errors.append(message)
 
 
+def has_control_characters(value: str) -> bool:
+    return any(unicodedata.category(char) == "Cc" for char in value)
+
+
+def reject_lone_surrogates(value: Any) -> None:
+    """JSONでdecodeできてもUTF-8へencodeできないlone surrogateを再帰的に拒否する。"""
+    if isinstance(value, str):
+        if any(0xD800 <= ord(char) <= 0xDFFF for char in value):
+            raise ValueError("manifestに不正なUnicode scalar値がある")
+        return
+    if isinstance(value, dict):
+        for key, item in value.items():
+            reject_lone_surrogates(key)
+            reject_lone_surrogates(item)
+        return
+    if isinstance(value, list):
+        for item in value:
+            reject_lone_surrogates(item)
+
+
 def load_manifest(path: Path) -> dict[str, Any]:
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ValueError(f"manifestを読めない: {exc}") from exc
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        raise ValueError("manifestを読めない") from exc
+    try:
+        value = json.loads(text)
+    except (json.JSONDecodeError, ValueError) as exc:
+        raise ValueError("manifestが不正なJSON") from exc
+    reject_lone_surrogates(value)
     if not isinstance(value, dict):
         raise ValueError("manifestのルートはobjectである必要がある")
     return value
+
+
+def extract_inherited_env_names(value: Any) -> set[str]:
+    """Parseable objectsから安全なenv名だけを保守的に取り出す。"""
+    if not isinstance(value, dict) or not isinstance(value.get("cases"), list):
+        return set()
+    return {
+        name
+        for case in value["cases"] if isinstance(case, dict)
+        for name in (case.get("inheritEnv") if isinstance(case.get("inheritEnv"), list) else [])
+        if isinstance(name, str) and ENV_NAME_RE.fullmatch(name)
+    }
+
+
+def _relative_input_path(value: str) -> Path | None:
+    candidate = Path(value)
+    if (
+        not value.strip() or candidate == Path(".") or has_control_characters(value)
+        or candidate.is_absolute() or ".." in candidate.parts
+    ):
+        return None
+    return candidate
+
+
+def _has_symlink_component(base: Path, relative: Path) -> bool:
+    current = base
+    for part in relative.parts:
+        current = current / part
+        if os.path.lexists(current) and current.is_symlink():
+            return True
+    return False
 
 
 def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]:
@@ -91,17 +163,31 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
         if ("context" in image) != ("file" in image):
             fail(errors, "image.contextとimage.fileは両方指定するか、両方省略する")
         for field in ("context", "file"):
-            if field in image and (not isinstance(image[field], str) or not image[field].strip()):
-                fail(errors, f"image.{field}は空でない文字列にする")
+            value = image.get(field)
+            if field in image and (
+                not isinstance(value, str) or _relative_input_path(value) is None
+            ):
+                fail(errors, f"image.{field}はmanifest配下のdot/..を含まない相対パスにする")
         if "pull" in image and not isinstance(image["pull"], bool):
             fail(errors, "image.pullはbooleanにする")
         if "context" in image and isinstance(image.get("context"), str) and isinstance(image.get("file"), str):
-            context_path = (path.parent / image["context"]).resolve()
-            file_path = (path.parent / image["file"]).resolve()
-            if not context_path.is_dir():
-                fail(errors, f"image.contextが存在するディレクトリではない: {context_path}")
-            if not file_path.is_file():
-                fail(errors, f"image.fileが存在するファイルではない: {file_path}")
+            context_lexical = _relative_input_path(image["context"])
+            file_lexical = _relative_input_path(image["file"])
+            if context_lexical is not None and file_lexical is not None:
+                context_path = path.parent / context_lexical
+                file_path = path.parent / file_lexical
+                if _has_symlink_component(path.parent, context_lexical):
+                    fail(errors, "image.contextにsymlink componentは使えない")
+                elif not context_path.is_dir() or context_path.is_symlink():
+                    fail(errors, "image.contextは実ディレクトリにする")
+                if _has_symlink_component(path.parent, file_lexical):
+                    fail(errors, "image.fileにsymlink componentは使えない")
+                elif not file_path.is_file() or file_path.is_symlink():
+                    fail(errors, "image.fileは通常ファイルにする")
+                try:
+                    file_path.resolve(strict=True).relative_to(context_path.resolve(strict=True))
+                except (OSError, ValueError):
+                    fail(errors, "image.fileはimage.context配下の通常ファイルにする")
 
     defaults = manifest.get("defaults")
     if not isinstance(defaults, dict):
@@ -142,8 +228,8 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
         if unknown_mount:
             fail(errors, f"{prefix}に未知キー: {', '.join(sorted(unknown_mount))}")
         source, target = mount.get("source"), mount.get("target")
-        if not isinstance(source, str) or not source.strip():
-            fail(errors, f"{prefix}.sourceを指定する")
+        if not isinstance(source, str) or not source.strip() or has_control_characters(source):
+            fail(errors, f"{prefix}.sourceは制御文字を含まない値にする")
         else:
             lexical_source = Path(source)
             if "," in source:
@@ -151,15 +237,17 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
             resolved_source = (path.parent / lexical_source).resolve()
             if lexical_source.is_absolute() or ".." in lexical_source.parts:
                 fail(errors, f"{prefix}.sourceはmanifest配下の相対パスにする")
-            elif not resolved_source.exists():
-                fail(errors, f"{prefix}.sourceが存在しない: {resolved_source}")
+            elif _has_symlink_component(path.parent, lexical_source):
+                fail(errors, f"{prefix}.sourceにsymlink componentは使えない")
+            elif not ((path.parent / lexical_source).is_file() or (path.parent / lexical_source).is_dir()):
+                fail(errors, f"{prefix}.sourceは通常ファイルまたは実ディレクトリにする")
             else:
                 try:
                     resolved_source.relative_to(path.parent.resolve())
                 except ValueError:
                     fail(errors, f"{prefix}.sourceがmanifest配下から外れる: {resolved_source}")
-        if not isinstance(target, str) or not target.startswith("/"):
-            fail(errors, f"{prefix}.targetは絶対パスにする")
+        if not isinstance(target, str) or not target.startswith("/") or has_control_characters(target):
+            fail(errors, f"{prefix}.targetは制御文字を含まない絶対パスにする")
         else:
             normalized_target = posixpath.normpath(target)
             if "," in target or normalized_target != target:
@@ -214,7 +302,7 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
         if not isinstance(case.get("description"), str) or not case["description"].strip():
             fail(errors, f"{prefix}.descriptionを指定する")
         relation = case.get("relation")
-        if relation not in RELATIONS:
+        if not isinstance(relation, str) or relation not in RELATIONS:
             fail(errors, f"{prefix}.relationはsupport/falsify/neutralのいずれかにする")
         case_criterion_ids = case.get("criterionIds")
         if not isinstance(case_criterion_ids, list) or not all(isinstance(x, str) for x in case_criterion_ids):
@@ -263,11 +351,13 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
         if not isinstance(env, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in env.items()):
             fail(errors, f"{prefix}.envは文字列値のobjectにする")
         inherit = case.get("inheritEnv", [])
-        if not isinstance(inherit, list) or not all(isinstance(x, str) and x for x in inherit):
-            fail(errors, f"{prefix}.inheritEnvは文字列配列にする")
+        if not isinstance(inherit, list) or not all(
+            isinstance(x, str) and ENV_NAME_RE.fullmatch(x) for x in inherit
+        ):
+            fail(errors, f"{prefix}.inheritEnvは安全な環境変数名の文字列配列にする")
             inherit = []
         agent_cli = case.get("agentCli")
-        if agent_cli is not None and agent_cli not in AGENT_CLIS:
+        if agent_cli is not None and (not isinstance(agent_cli, str) or agent_cli not in AGENT_CLIS):
             fail(errors, f"{prefix}.agentCliが不正")
         supplied_auth_names = set(inherit) | (set(env) if isinstance(env, dict) else set())
         if agent_cli == "claude-code-subscription":
@@ -306,8 +396,10 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
             elif value:
                 effective_predicates += 1
         artifacts = oracle.get("artifacts", [])
+        has_present_artifact = False
         if not isinstance(artifacts, list):
             fail(errors, f"{prefix}.oracle.artifactsは配列にする")
+            artifacts = []
         else:
             if artifacts:
                 effective_predicates += 1
@@ -320,24 +412,48 @@ def validate_manifest(path: Path) -> tuple[dict[str, Any], list[str], list[str]]
                 if unknown_artifact:
                     fail(errors, f"{aprefix}に未知キー: {', '.join(sorted(unknown_artifact))}")
                 artifact_path = Path(artifact["path"])
-                if not artifact["path"] or artifact["path"] == "." or artifact_path.is_absolute() or ".." in artifact_path.parts:
+                if (not artifact["path"] or artifact["path"] == "."
+                        or has_control_characters(artifact["path"])
+                        or artifact_path.is_absolute() or ".." in artifact_path.parts):
                     fail(errors, f"{aprefix}.pathは/evidence相対の空でない安全なファイルパスにする")
                 if "exists" in artifact and not isinstance(artifact["exists"], bool):
                     fail(errors, f"{aprefix}.existsはbooleanにする")
                 if "contains" in artifact and (not isinstance(artifact["contains"], str) or not artifact["contains"]):
                     fail(errors, f"{aprefix}.containsは空でない文字列にする")
+                if artifact.get("exists") is False and "contains" in artifact:
+                    fail(errors, f"{aprefix}はexists=falseとcontainsを併用できない")
+                if artifact.get("exists") is True:
+                    has_present_artifact = True
         if effective_predicates == 0:
             fail(errors, f"{prefix}.oracleには実効的な判定条件が必要")
+        payload_discriminator = bool(oracle.get("stdoutContains")) or has_present_artifact
+        if isinstance(relation, str) and relation in {"support", "falsify"} and not payload_discriminator:
+            warnings.append(
+                f"{prefix}.oracleはclaim-bearing caseで正のpayload-origin discriminatorがない: "
+                "payload由来のstdout markerまたはexists=trueのartifactを追加し、Apple Container system logも確認する; "
+                "markerの一意性や起動成功・失敗をこのWARNINGだけでは証明できない"
+            )
 
-    referenced_criteria = {
+    falsify_referenced_criteria = {
         criterion_id
-        for case in cases if isinstance(case, dict)
-        for criterion_id in case.get("criterionIds", []) if isinstance(criterion_id, str)
+        for case in cases
+        if isinstance(case, dict)
+        and case.get("relation") == "falsify"
+        and isinstance(case.get("criterionIds"), list)
+        for criterion_id in case["criterionIds"]
+        if isinstance(criterion_id, str)
     }
-    uncovered_criteria = criterion_ids - referenced_criteria
+    uncovered_criteria = criterion_ids - falsify_referenced_criteria
     if uncovered_criteria:
-        fail(errors, f"ケースに接続されていないfalsificationCriteria: {', '.join(sorted(uncovered_criteria))}")
-    if has_writable_mount and defaults.get("maxConcurrency", 8) > 1:
+        fail(errors, "relation=falsifyケースに接続されていないfalsificationCriteria: "
+             + ", ".join(sorted(uncovered_criteria)))
+    effective_max_concurrency = defaults.get("maxConcurrency", 8)
+    if (
+        has_writable_mount
+        and isinstance(effective_max_concurrency, int)
+        and not isinstance(effective_max_concurrency, bool)
+        and effective_max_concurrency > 1
+    ):
         warnings.append("共有書き込みmountがあるためrunnerは全ジョブを直列化する")
     if len(groups) < 3:
         warnings.append("ケース群が3未満: 正例・負例・境界/失敗系の分離を確認する")
@@ -359,44 +475,157 @@ def recommended_concurrency(manifest: dict[str, Any], total_jobs: int) -> int:
     return max(1, min(total_jobs, maximum, cpu_bound))
 
 
+def _secret_values(inherited_names: set[str]) -> list[str]:
+    return sorted(
+        {os.environ.get(name, "") for name in inherited_names if os.environ.get(name, "")},
+        key=lambda item: (-len(item), item),
+    )
+
+
+def _safe_complete_stream(records: list[str], inherited_names: set[str]) -> str:
+    """Redact the complete emitted stream, including every terminating newline."""
+    text = "".join(str(record) + "\n" for record in records)
+    values = _secret_values(inherited_names)
+    previous = None
+    while text != previous:
+        previous = text
+        for secret in values:
+            text = text.replace(secret, "")
+    if any(secret in text for secret in values):
+        raise RuntimeError("diagnostic stream cannot be emitted safely")
+    return text
+
+
+def _invalid_result(message: str) -> dict[str, Any]:
+    return {
+        "valid": False,
+        "errors": [message],
+        "warnings": [],
+        "cases": 0,
+        "groups": [],
+        "jobs": 0,
+        "recommendedConcurrency": None,
+    }
+
+
+def _emit_single_channel(
+    records: list[str], inherited_names: set[str], *, stdout: bool, as_json: bool
+) -> None:
+    """Emit one complete checked payload to exactly one physical channel."""
+    values = _secret_values(inherited_names)
+    try:
+        if as_json:
+            payload = (records[0] if records else "null") + "\n"
+            if any(secret in payload for secret in values):
+                candidates = ["null\n", "0\n", "false\n", "\"\"\n", "{}\n", "[]\n"]
+                payload = next(
+                    candidate for candidate in candidates
+                    if not any(secret in candidate for secret in values)
+                )
+        else:
+            payload = _safe_complete_stream(records, inherited_names)
+        encoded = payload.encode("utf-8")
+    except (RuntimeError, UnicodeEncodeError, StopIteration):
+        fallback = "" if as_json else "ERROR: output encoding failed\n"
+        encoded = fallback.encode("ascii")
+    stream = sys.stdout.buffer if stdout and hasattr(sys.stdout, "buffer") else (
+        sys.stderr.buffer if not stdout and hasattr(sys.stderr, "buffer") else None
+    )
+    if stream is not None:
+        stream.write(encoded)
+    else:
+        (sys.stdout if stdout else sys.stderr).write(encoded.decode("utf-8"))
+
+
+def _preliminary_names(argv: list[str]) -> set[str]:
+    for token in argv:
+        if token.startswith("-"):
+            continue
+        try:
+            parsed = json.loads(Path(token).read_text(encoding="utf-8"))
+            reject_lone_surrogates(parsed)
+            return extract_inherited_env_names(parsed)
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
+            continue
+    return set()
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Apple Container検証マニフェストを検査する")
+    argv = sys.argv[1:]
+    as_json_requested = "--json" in argv
+    inherited_names = _preliminary_names(argv)
+    parser = SilentArgumentParser(
+        description="Apple Container検証マニフェストを検査する", add_help=False
+    )
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--json", action="store_true", dest="as_json")
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args(argv)
+    except CliArgumentError:
+        result = _invalid_result("invalid arguments")
+        records = [json.dumps(result, ensure_ascii=False, indent=2)] if as_json_requested else [
+            "ERROR: invalid arguments"
+        ]
+        _emit_single_channel(
+            records, inherited_names, stdout=as_json_requested, as_json=as_json_requested
+        )
+        return 2
+
     try:
         manifest, errors, warnings = validate_manifest(args.manifest.resolve())
     except ValueError as exc:
-        print(f"ERROR: {exc}", file=sys.stderr)
+        result = _invalid_result(str(exc))
+        records = [json.dumps(result, ensure_ascii=False, indent=2)] if args.as_json else [
+            "ERROR: " + str(exc)
+        ]
+        _emit_single_channel(records, inherited_names, stdout=args.as_json, as_json=args.as_json)
         return 2
-    total_jobs = sum(
-        case.get("repeats", manifest.get("defaults", {}).get("repeats", 1))
-        for case in manifest.get("cases", [])
-        if isinstance(case, dict)
-    )
+
+    inherited_names = extract_inherited_env_names(manifest)
+    if errors:
+        total_jobs = 0
+        case_count = 0
+        groups: list[str] = []
+        recommended = None
+    else:
+        cases = manifest["cases"]
+        defaults = manifest["defaults"]
+        total_jobs = sum(case.get("repeats", defaults.get("repeats", 1)) for case in cases)
+        case_count = len(cases)
+        groups = sorted({case["group"] for case in cases})
+        recommended = recommended_concurrency(manifest, total_jobs)
     result = {
         "valid": not errors,
         "errors": errors,
         "warnings": warnings,
-        "cases": len(manifest.get("cases", [])),
-        "groups": sorted({case.get("group") for case in manifest.get("cases", []) if isinstance(case, dict)}),
+        "cases": case_count,
+        "groups": groups,
         "jobs": total_jobs,
-        "recommendedConcurrency": recommended_concurrency(manifest, total_jobs) if not errors else None,
+        "recommendedConcurrency": recommended,
     }
+    exit_code = 0 if not errors else 1
     if args.as_json:
-        print(json.dumps(result, ensure_ascii=False, indent=2))
+        try:
+            serialized = json.dumps(result, ensure_ascii=False, indent=2)
+            complete = serialized + "\n"
+            if any(secret in complete for secret in _secret_values(inherited_names)):
+                raise RuntimeError("diagnostic cannot be serialized safely")
+            records = [serialized]
+        except (RuntimeError, UnicodeEncodeError):
+            records = [json.dumps(_invalid_result("diagnostic cannot be serialized safely"))]
+            exit_code = 2
+        _emit_single_channel(records, inherited_names, stdout=True, as_json=True)
     else:
-        for warning in warnings:
-            print(f"WARNING: {warning}", file=sys.stderr)
+        records = ["WARNING: " + warning for warning in warnings]
         if errors:
-            for error in errors:
-                print(f"ERROR: {error}", file=sys.stderr)
+            records.extend("ERROR: " + error for error in errors)
         else:
-            print(
-                f"OK: cases={result['cases']} jobs={total_jobs} groups={','.join(result['groups'])} "
-                f"recommended_concurrency={result['recommendedConcurrency']}"
+            records.append(
+                f"OK: cases={case_count} jobs={total_jobs} groups={','.join(groups)} "
+                f"recommended_concurrency={recommended}"
             )
-    return 0 if not errors else 1
+        _emit_single_channel(records, inherited_names, stdout=not errors, as_json=False)
+    return exit_code
 
 
 if __name__ == "__main__":
