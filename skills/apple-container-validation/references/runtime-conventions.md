@@ -52,7 +52,7 @@ npx tsc --noEmit
 npx tsx src/run.ts
 ```
 
-`typescript@7`がレジストリ上で解決できない場合は推測した版へ落とさず、`Blocked`として利用可能な版とエラーを記録する。
+`typescript@7`がレジストリ上で解決できない場合は推測した版へ落とさず、`BLOCKED`として利用可能な版とエラーを記録する。
 
 ### pinoの使い方
 
