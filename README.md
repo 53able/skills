@@ -31,6 +31,7 @@ Cursor / Claude Code / Codex など 40 以上のエージェントで使用で�
 - **tech-article-angle** — 技術記事のアイデアや草稿を、現在需要の高い論点へ寄せてテーマ・タイトル・構成を整える。需要モデルと角度スコア用スクリプトを同梱。
 - **zenn-markdown** — Zenn Flavored Markdown の記法（message/details、埋め込み、mermaid 制限、KaTeX 等）を適用して記事・スクラップ・本の原稿を執筆・校正する。
 - **natural-expression-refiner** — 誇張・借り物の美辞麗句・過剰な謙遜を避け、実感に近い等身大な表現へ日本語文章を整える。過大化を検出する `scripts/flag-overstatement.py` を同梱。
+- **remove-hedging** — 文章中の不必要な保留文（「状況による」「可能性がある」等）を明確な結論と具体的な選択条件へ書き換える。技術記事・レポート・提案書向け。定型的な候補を検出する `scripts/find_hedges.py` を同梱。
 - **sentence-logic-guard** — 文と文のつながりを点検し、直前の文が残した不足を次の文が補っているかを読者視点で確認する。文ペア抽出用の `scripts/sentence_pairs.py` を同梱。
 - **logical-consistency-reviewer** — Why So / So What / MECE の観点で文章・記事・レポート・企画書の論点飛躍・矛盾・根拠不足を検出する。
 - **chuuni-refiner** — 日本語文章を意図を保ったまま指定の厨二レベル（low/medium/high/max）へ、暗黒ファンタジー的な大仰さと特別な存在感を加えて変換する。レベル別の強度を決める `scripts/level-guide.py` を同梱。
@@ -159,6 +160,7 @@ npx skills add 53able/skills --skill nihongo-skeleton-writing
 npx skills add 53able/skills --skill tech-article-angle
 npx skills add 53able/skills --skill zenn-markdown
 npx skills add 53able/skills --skill natural-expression-refiner
+npx skills add 53able/skills --skill remove-hedging
 npx skills add 53able/skills --skill sentence-logic-guard
 npx skills add 53able/skills --skill logical-consistency-reviewer
 npx skills add 53able/skills --skill chuuni-refiner
@@ -209,6 +211,7 @@ npx skills add 53able/skills --skill nihongo-skeleton-writing -g -a cursor
 npx skills add 53able/skills --skill tech-article-angle -g -a cursor
 npx skills add 53able/skills --skill zenn-markdown -g -a cursor
 npx skills add 53able/skills --skill natural-expression-refiner -g -a cursor
+npx skills add 53able/skills --skill remove-hedging -g -a cursor
 npx skills add 53able/skills --skill sentence-logic-guard -g -a cursor
 npx skills add 53able/skills --skill logical-consistency-reviewer -g -a cursor
 npx skills add 53able/skills --skill chuuni-refiner -g -a cursor
@@ -262,6 +265,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/nihongo-skeleto
 npx skills add https://github.com/53able/skills/tree/main/skills/tech-article-angle -g
 npx skills add https://github.com/53able/skills/tree/main/skills/zenn-markdown -g
 npx skills add https://github.com/53able/skills/tree/main/skills/natural-expression-refiner -g
+npx skills add https://github.com/53able/skills/tree/main/skills/remove-hedging -g
 npx skills add https://github.com/53able/skills/tree/main/skills/sentence-logic-guard -g
 npx skills add https://github.com/53able/skills/tree/main/skills/logical-consistency-reviewer -g
 npx skills add https://github.com/53able/skills/tree/main/skills/chuuni-refiner -g
