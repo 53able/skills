@@ -106,6 +106,7 @@ WXT を使ったブラウザ拡張の設計・実装・検証を支援するス�
 画像や文書を公開・共有・LLM投入する前に機密情報を除去するスキル。
 
 - **image-pii-masking** — 画像内の文字として写り込んだ氏名・住所・電話番号・APIキー等を OCR(Tesseract)と Presidio、日本語向け正規表現で検出し、不透明な塗りつぶし・再OCR検証・EXIF除去まで実行する。`scripts/mask_image.py` と `scripts/selftest.py` を同梱。
+- **mcp-governance-review** — MCP サーバー・ツールの導入可否を決定論的なガバナンス手順で審査する。T0〜T3のリスク分類、来歴・権限・ネットワーク確認、承認ゲート、監査証跡、変更管理、インシデント対応を経て Go／Conditional Go／No-Go を判定する。リスク分類スクリプト `scripts/classify-risk.py` を同梱。
 
 ## ドキュメント・変換
 
@@ -133,6 +134,12 @@ LLM 投入前にローカル文書を扱いやすい形式へ変換するスキ�
 Apple Container上で技術的主張を反証可能なケース行列に変換し、隔離実行して検証するスキル。
 
 - **apple-container-validation** — Apple Container上に再現可能な技術検証環境を構築し、コンテキストから論点・反証条件・オラクル・ケース行列を定義して、独立ケースを安全な上限内で並列実行し、ログと来歴を伴う Markdown レポートへ集約する。macOS 26 (Apple silicon) と Apple Container CLI が必要。
+
+## エージェント実行隔離
+
+未信頼のコーディングエージェントをホストから切り離して実行するスキル。
+
+- **apple-container-coding-agent** — 変更不能なタスク契約、非公開リポジトリスナップショット、ホスト側の証拠収集、パッチの隔離検査、クリーン環境での再検証を組み合わせ、AIコーディングエージェント（Claude Code、Codex、Pi等）を最小権限の Apple Container へ隔離する。Apple silicon Mac と Apple Container CLI、Git、Python 3.10 以降が必要。
 
 ## インストール
 
@@ -188,10 +195,12 @@ npx skills add 53able/skills --skill pdf-markdown-local
 npx skills add 53able/skills --skill csv-llm-edit
 npx skills add 53able/skills --skill backlog-text-formatter
 npx skills add 53able/skills --skill image-pii-masking
+npx skills add 53able/skills --skill mcp-governance-review
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
 npx skills add 53able/skills --skill primitive-reimpl
 npx skills add 53able/skills --skill apple-container-validation
+npx skills add 53able/skills --skill apple-container-coding-agent
 
 # Cursor 向けにグローバルインストール
 npx skills add 53able/skills --skill thinking-ensemble -g -a cursor
@@ -239,10 +248,12 @@ npx skills add 53able/skills --skill pdf-markdown-local -g -a cursor
 npx skills add 53able/skills --skill csv-llm-edit -g -a cursor
 npx skills add 53able/skills --skill backlog-text-formatter -g -a cursor
 npx skills add 53able/skills --skill image-pii-masking -g -a cursor
+npx skills add 53able/skills --skill mcp-governance-review -g -a cursor
 npx skills add 53able/skills --skill pi-agent-harness -g -a cursor
 npx skills add 53able/skills --skill reliable-llm-app-principles -g -a cursor
 npx skills add 53able/skills --skill primitive-reimpl -g -a cursor
 npx skills add 53able/skills --skill apple-container-validation -g -a cursor
+npx skills add 53able/skills --skill apple-container-coding-agent -g -a cursor
 ```
 
 サブディレクトリだけ指定する場合:
@@ -293,10 +304,12 @@ npx skills add https://github.com/53able/skills/tree/main/skills/pdf-markdown-lo
 npx skills add https://github.com/53able/skills/tree/main/skills/csv-llm-edit -g
 npx skills add https://github.com/53able/skills/tree/main/skills/backlog-text-formatter -g
 npx skills add https://github.com/53able/skills/tree/main/skills/image-pii-masking -g
+npx skills add https://github.com/53able/skills/tree/main/skills/mcp-governance-review -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
 npx skills add https://github.com/53able/skills/tree/main/skills/apple-container-validation -g
+npx skills add https://github.com/53able/skills/tree/main/skills/apple-container-coding-agent -g
 ```
 
 ## スキル構成
