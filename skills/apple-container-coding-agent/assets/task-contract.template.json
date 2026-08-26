@@ -1,0 +1,38 @@
+{
+  "task_id": "TASK-123",
+  "baseline_commit": "0123456789abcdef0123456789abcdef01234567",
+  "goal": "観測可能な結果を1つ記述する。",
+  "in_scope_paths": [
+    "src/",
+    "tests/"
+  ],
+  "out_of_scope": [
+    "dependencyのupgrade",
+    "deployment"
+  ],
+  "constraints": [
+    "Git remoteへwriteしない",
+    "dependencyを変更しない"
+  ],
+  "acceptance": [
+    {
+      "argv": ["npm", "test", "--", "tests/example.test.ts"],
+      "expected_exit": 0
+    }
+  ],
+  "budget": {
+    "wall_seconds": 1800,
+    "cpus": 2,
+    "memory": "4G",
+    "retries": 0
+  },
+  "network": {
+    "mode": "none",
+    "allowed_hosts": []
+  },
+  "escalate_if": [
+    "protected pathの変更が必要になる",
+    "acceptance criterionが曖昧である"
+  ],
+  "snapshot_allow_sensitive_paths": []
+}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pi",
+    "-p",
+    "--mode",
+    "json",
+    "--no-session",
+    "--no-approve",
+    "--no-extensions",
+    "--no-skills",
+    "--no-prompt-templates",
+    "--no-context-files",
+    "--tools",
+    "read,write,edit,bash",
+    "/run/task-contract.jsonに従う。private workspaceだけを編集する。Git remoteを設定・使用しない。未解決事項を明示する。"
+  ]
+}

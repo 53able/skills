@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "claude",
+    "--bare",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--allowedTools",
+    "Read,Edit,Bash",
+    "/run/task-contract.jsonに従う。private workspaceだけを編集する。Git remoteを設定・使用しない。未解決事項を明示する。"
+  ]
+}

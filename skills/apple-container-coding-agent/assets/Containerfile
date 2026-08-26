@@ -1,0 +1,23 @@
+FROM node:24-bookworm-slim
+
+ARG AGENT_PACKAGE
+ARG AGENT_VERSION
+ARG WORKER_UID=10001
+
+RUN test -n "$AGENT_PACKAGE" && test -n "$AGENT_VERSION" \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends bash ca-certificates git python3 ripgrep tini \
+  && rm -rf /var/lib/apt/lists/* \
+  && npm install -g --ignore-scripts "${AGENT_PACKAGE}@${AGENT_VERSION}"
+
+RUN groupadd --gid 10001 worker \
+  && useradd --create-home --uid "$WORKER_UID" --gid 10001 --shell /bin/bash worker \
+  && mkdir -p /workspace /evidence \
+  && chown -R worker:worker /workspace /evidence
+
+COPY worker-entrypoint.py /usr/local/bin/worker-entrypoint
+RUN chmod 0555 /usr/local/bin/worker-entrypoint
+
+USER worker
+WORKDIR /workspace
+ENTRYPOINT ["/usr/bin/python3", "/usr/local/bin/worker-entrypoint"]
