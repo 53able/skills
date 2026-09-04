@@ -19,6 +19,7 @@
 | Small and sharp | Pass / Needs work / Unknown |  |  |
 | Behavior fit | Pass / Needs work / Unknown |  |  |
 | Workflow redesign | Pass / Needs work / Unknown |  |  |
+| Agent-readable context | Pass / Needs work / Unknown |  |  |
 | Expertise and translation | Pass / Needs work / Unknown |  |  |
 | Distribution loop | Pass / Needs work / Unknown |  |  |
 | Human system | Pass / Needs work / Unknown |  |  |

@@ -26,6 +26,7 @@ REQUIRED_TESTS = [
     "Small and sharp",
     "Behavior fit",
     "Workflow redesign",
+    "Agent-readable context",
     "Expertise and translation",
     "Distribution loop",
     "Human system",

@@ -28,6 +28,7 @@ AI時代の制作・導入・発信を、現実の利用行動と専門性に接
    - 利用を思い出す契機
    - 良い結果を判定するdomain expertise
    - agentへ渡すcontext、reference、iteration方法
+   - 会議・会話の記録がagentの入力として読める形（transcript、公開channel、共有document）で残るか
    - distribution経路
    - 成功指標と中止条件
 2. `対象ユーザー`、`具体的な摩擦`、`現在のworkflow`のいずれかが欠ける場合は、次の優先順で分岐する。
@@ -40,7 +41,7 @@ AI時代の制作・導入・発信を、現実の利用行動と専門性に接
 2. 依頼内に評価基準やsourceがある場合は、その内容を原則より優先する。
 3. 依頼内のsourceが取得不能な場合は推測で補わず、`Blocked / Unverified`と記録する。
 
-**Step 4: 7つのmentor testで診断する**
+**Step 4: 8つのmentor testで診断する**
 1. 各testを`Pass`、`Needs work`、`Unknown`のいずれかで判定する。
 2. 各判定へ依頼内の根拠を1つ以上付ける。
 3. 次の順序で診断する。
@@ -48,13 +49,14 @@ AI時代の制作・導入・発信を、現実の利用行動と専門性に接
    2. **Small and sharp:** 「何でもするagent」ではなく、狭く明確な仕事を選んでいるか。
    3. **Behavior fit:** 忘れやすく面倒を避ける現実の人間が、実際に使う導線になっているか。
    4. **Workflow redesign:** 旧workflowへAIを追加するだけでなく、仕事の流れを再設計しているか。
-   5. **Expertise and translation:** 良さを見分ける専門性と、その基準をagentへ渡す方法があるか。
-   6. **Distribution loop:** 説明、demonstration、教育、feedbackが制作と接続しているか。
-   7. **Human system:** 人間同士の協働、若手の学習機会、専門性の再生産を壊していないか。
+   5. **Agent-readable context:** 会議・会話・決定事項が、人間向け要約でなくagentが入力として使える形（transcript、公開channel、共有document）で残っているか。
+   6. **Expertise and translation:** 良さを見分ける専門性と、その基準をagentへ渡す方法があるか。
+   7. **Distribution loop:** 説明、demonstration、教育、feedbackが制作と接続しているか。
+   8. **Human system:** 人間同士の協働、若手の学習機会、専門性の再生産を壊していないか。
 4. 原則同士が衝突する場合は一方へ無理に統合せず、緊張関係として示す。
 
 **Step 5: 最小の現実接触実験を設計する**
-1. 7つのtestから`Unknown`を優先し、次に`Needs work`を選ぶ。同順位が複数ある場合は、`Contact with reality`、`Behavior fit`、`Expertise and translation`、`Workflow redesign`、`Small and sharp`、`Distribution loop`、`Human system`の順で1点を選ぶ。
+1. 8つのtestから`Unknown`を優先し、次に`Needs work`を選ぶ。同順位が複数ある場合は、`Contact with reality`、`Behavior fit`、`Expertise and translation`、`Workflow redesign`、`Agent-readable context`、`Small and sharp`、`Distribution loop`、`Human system`の順で1点を選ぶ。
 2. 7日以内に実施できる実験へ縮小する。
 3. 実験へ次の要素を必ず含める。
    - 1種類の対象ユーザー

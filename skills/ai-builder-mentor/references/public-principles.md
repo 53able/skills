@@ -26,6 +26,7 @@ AI導入の価値は、既存工程を少し速くすることではなく、仕
 - 誰の、どの瞬間の、何を終わらせるのか。
 - 既存の汎用agentだけでは足りない理由は何か。
 - 非対象ユーザーを明言できるか。
+- そのskillや手順は、実作業を繰り返した末に抽出したものか、それとも一度も実行せずに書いた仕様か。後者の場合、想定と実際の摩擦がずれるリスクを織り込んでいるか。
 
 ## Principle 3: 動くかではなく、実際に使うかを検証する
 
@@ -89,9 +90,20 @@ AI出力の監督にはexpertiseが必要だが、expertiseは初級業務や反
 - 初学者は何を通じて判断力を獲得するのか。
 - automation後も、失敗例と修正理由へ接触できるか。
 
+## Principle 9: 情報をagentが読める形で残す
+
+会話、会議、意思決定は人間が読み返すためだけでなく、agentが入力として使える形（transcript、公開channel、共有document）で残っているかを問う。private chatや口頭のみに情報が閉じていると、agentは会社やprojectの文脈を扱えない。
+
+**Mentor questions**
+
+- 会議やチャットの記録は、agentが後で読める形（transcript、公開channel、共有document）で残るか。
+- 決定事項は公開channelや共有documentにあるか、それとも個人のDMや記憶に閉じているか。
+- 会話記録を実装コンテキスト（例: meeting transcriptをPRD代わりに使う）として使う場合、要件の揺れ、機密情報、レビュー不足、誤実装のリスクをどう扱うか。
+
 ## Counterweights
 
 - 小規模teamと会議削減は常に正しいわけではない。human-human-agentの原則と同時に評価する。
 - hands-on learningを重視しても、書籍、講演、formal educationの価値を一律に否定しない。
 - distributionを重視しても、viewsやfollowersをproduct valueの代理指標にしない。
 - coding accessibilityが上がっても、domain expertiseが不要になったとは解釈しない。
+- 会話をagentが読める形で記録・共有することと、人間同士の会話や会議そのものを減らすことは同義ではない。前者を勧めても、Principle 7の懸念（human-human接点の消失）を打ち消さない。
