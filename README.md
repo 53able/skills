@@ -100,6 +100,7 @@ WXT を使ったブラウザ拡張の設計・実装・検証を支援するス�
 - **code-reading** — コードリーディングを取得・処理・管理の3層フレームワークで効率的に実行する。実装をむやみに精読せず、インターフェイスと役割の理解に読む箇所を絞る。複雑なケースではサブエージェント起動を推奨。
 - **cognitive-load-minimizer** — コードレビュー・リファクタ・アーキ判断・機能実装で、避けられる認知負荷（浅い抽象、技巧的条件分岐、早すぎるレイヤー化、フレームワーク密結合、誤解を招くドメインモデル）を特定して削る。認知負荷スコアを算出する `scripts/score-cognitive-load.py` を同梱。
 - **task-breakdown** — Design Docs を精読し、実装可能なタスクに分解して、ブランチ戦略を策定する。
+- **project-requirements-management** — 事業課題から検証可能な要求、合意済みベースライン、変更判断までを一貫して管理する。要件ワークブック、ベースライン、変更要求のテンプレートと構造検証スクリプトを同梱。
 - **tdd-from-design-docs** — Design Docs から指定された範囲を、失敗するテストを先に書く TDD（Red/Green/Refactor）ワークフローで実装する。Design Docs がない場合はコードベース・ユーザー入力から要件を代替収集する。
 - **commit-diffs** — 現在の差分を分析し、「1コミット＝1つの論理的変更」の原則で最適な粒度にコミットを分割・実行する。単純なケースはスキル内で完結し、複雑なケースは commit-manager サブエージェントへ委譲する。
 - **git-commit-granularity** — Git コミットの粒度ベストプラクティスに従い、`git add -p` によるハンクステージングでアトミックで単一概念のコミットへ分割・整形するガイドを提供する。
@@ -185,6 +186,7 @@ npx skills add 53able/skills --skill context-to-gantt
 npx skills add 53able/skills --skill code-reading
 npx skills add 53able/skills --skill cognitive-load-minimizer
 npx skills add 53able/skills --skill task-breakdown
+npx skills add 53able/skills --skill project-requirements-management
 npx skills add 53able/skills --skill tdd-from-design-docs
 npx skills add 53able/skills --skill commit-diffs
 npx skills add 53able/skills --skill git-commit-granularity
@@ -237,6 +239,7 @@ npx skills add 53able/skills --skill context-to-gantt -g -a cursor
 npx skills add 53able/skills --skill code-reading -g -a cursor
 npx skills add 53able/skills --skill cognitive-load-minimizer -g -a cursor
 npx skills add 53able/skills --skill task-breakdown -g -a cursor
+npx skills add 53able/skills --skill project-requirements-management -g -a cursor
 npx skills add 53able/skills --skill tdd-from-design-docs -g -a cursor
 npx skills add 53able/skills --skill commit-diffs -g -a cursor
 npx skills add 53able/skills --skill git-commit-granularity -g -a cursor
@@ -292,6 +295,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gant
 npx skills add https://github.com/53able/skills/tree/main/skills/code-reading -g
 npx skills add https://github.com/53able/skills/tree/main/skills/cognitive-load-minimizer -g
 npx skills add https://github.com/53able/skills/tree/main/skills/task-breakdown -g
+npx skills add https://github.com/53able/skills/tree/main/skills/project-requirements-management -g
 npx skills add https://github.com/53able/skills/tree/main/skills/tdd-from-design-docs -g
 npx skills add https://github.com/53able/skills/tree/main/skills/commit-diffs -g
 npx skills add https://github.com/53able/skills/tree/main/skills/git-commit-granularity -g
