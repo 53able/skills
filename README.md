@@ -34,6 +34,12 @@ LLM・生成AI・自律型AIエージェントを、能力境界、意図入力�
 
 - **ai-interface-design** — AIチャット、copilot、生成機能、ツール実行エージェント、長時間タスクのUXを、R0〜R3のリスク階層と「構成・入力・計算・出力・行動」の五段階で仕様化する。レビュー用テンプレート、設計原則、検証チェックリスト、成果物構造の検証スクリプトを同梱。
 
+## UI・インタラクション設計
+
+画面遷移や操作の拘束を見直し、ユーザーが作業を中断せず、安全に操作を続けられるインターフェースを設計するスキル。
+
+- **modeless-ui-design** — Web・アプリの画面要件、既存UI、ユーザーフローから、モードレス化の適否、モーダルを維持する根拠、非同期処理、可逆性、状態と例外を仕様化する。レビュー用テンプレート、判断基準、成果物の必須構造を確認する検証スクリプトを同梱。
+
 ## 執筆・発信
 
 フィード型の Web 長文を、クリックから読了まで設計するスキル。
@@ -170,6 +176,7 @@ npx skills add 53able/skills --skill thinking-meta
 npx skills add 53able/skills --skill jobs-theory-innovation
 npx skills add 53able/skills --skill ai-builder-mentor
 npx skills add 53able/skills --skill ai-interface-design
+npx skills add 53able/skills --skill modeless-ui-design
 npx skills add 53able/skills --skill readable-writing-workflow
 npx skills add 53able/skills --skill nihongo-skeleton-writing
 npx skills add 53able/skills --skill tech-article-angle
@@ -224,6 +231,7 @@ npx skills add 53able/skills --skill thinking-meta -g -a cursor
 npx skills add 53able/skills --skill jobs-theory-innovation -g -a cursor
 npx skills add 53able/skills --skill ai-builder-mentor -g -a cursor
 npx skills add 53able/skills --skill ai-interface-design -g -a cursor
+npx skills add 53able/skills --skill modeless-ui-design -g -a cursor
 npx skills add 53able/skills --skill readable-writing-workflow -g -a cursor
 npx skills add 53able/skills --skill nihongo-skeleton-writing -g -a cursor
 npx skills add 53able/skills --skill tech-article-angle -g -a cursor
@@ -281,6 +289,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/thinking-meta -
 npx skills add https://github.com/53able/skills/tree/main/skills/jobs-theory-innovation -g
 npx skills add https://github.com/53able/skills/tree/main/skills/ai-builder-mentor -g
 npx skills add https://github.com/53able/skills/tree/main/skills/ai-interface-design -g
+npx skills add https://github.com/53able/skills/tree/main/skills/modeless-ui-design -g
 npx skills add https://github.com/53able/skills/tree/main/skills/readable-writing-workflow -g
 npx skills add https://github.com/53able/skills/tree/main/skills/nihongo-skeleton-writing -g
 npx skills add https://github.com/53able/skills/tree/main/skills/tech-article-angle -g
