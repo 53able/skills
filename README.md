@@ -140,6 +140,7 @@ LLM 投入前にローカル文書を扱いやすい形式へ変換するスキ�
 
 - **pi-agent-harness** — [Pi Agent Harness](https://github.com/earendil-works/pi) の開発・拡張。CLI、Extension、SDK 組み込み、セッション管理、マルチプロバイダ LLM 設定をカバーする。
 - **reliable-llm-app-principles** — 12-Factor Agents を基に LLM アプリの設計・レビュー・改善を行う。プロンプト境界、構造化出力、状態管理、人間承認、監査可能性を手順化する。
+- **task-model-orchestrator** — Agent ツールで呼び出しごとのモデル指定ができる環境向け。タスクの曖昧さ・検証可能性・影響から Haiku / Sonnet / Opus への委譲を判断し、外部検証と昇格で結果を確認する。
 
 ## コードベース再実装
 
@@ -213,6 +214,7 @@ npx skills add 53able/skills --skill backlog-text-formatter
 npx skills add 53able/skills --skill image-pii-masking
 npx skills add 53able/skills --skill pi-agent-harness
 npx skills add 53able/skills --skill reliable-llm-app-principles
+npx skills add 53able/skills --skill task-model-orchestrator
 npx skills add 53able/skills --skill primitive-reimpl
 npx skills add 53able/skills --skill apple-container-validation
 
@@ -326,6 +328,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/backlog-text-fo
 npx skills add https://github.com/53able/skills/tree/main/skills/image-pii-masking -g
 npx skills add https://github.com/53able/skills/tree/main/skills/pi-agent-harness -g
 npx skills add https://github.com/53able/skills/tree/main/skills/reliable-llm-app-principles -g
+npx skills add https://github.com/53able/skills/tree/main/skills/task-model-orchestrator -g
 npx skills add https://github.com/53able/skills/tree/main/skills/primitive-reimpl -g
 npx skills add https://github.com/53able/skills/tree/main/skills/apple-container-validation -g
 ```
