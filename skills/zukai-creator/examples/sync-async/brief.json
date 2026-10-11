@@ -1,0 +1,150 @@
+{
+  "purpose": "完了を待つかどうかによる進行の違いを説明する。",
+  "audience": "同期と非同期の進め方を比べたい読者",
+  "message": "同期の例は完了後に次の作業へ進み、非同期の例は完了を待たず次の作業へ進む。",
+  "elements": [
+    {
+      "id": "sync_request",
+      "label": "依頼する",
+      "type": "process"
+    },
+    {
+      "id": "sync_wait",
+      "label": "完了を待つ",
+      "type": "state"
+    },
+    {
+      "id": "sync_next",
+      "label": "次の作業を始める",
+      "type": "process"
+    },
+    {
+      "id": "async_request",
+      "label": "依頼を開始する",
+      "type": "process"
+    },
+    {
+      "id": "async_next",
+      "label": "待たずに次の作業を始める",
+      "type": "process"
+    },
+    {
+      "id": "async_notify",
+      "label": "作業中に完了通知を受け取る",
+      "type": "process"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "sync_request",
+      "to": "sync_wait",
+      "verb": "待つ",
+      "direction": "one-way",
+      "kind": "sequence"
+    },
+    {
+      "from": "sync_wait",
+      "to": "sync_next",
+      "verb": "完了後",
+      "direction": "one-way",
+      "kind": "sequence"
+    },
+    {
+      "from": "async_request",
+      "to": "async_next",
+      "verb": "待たずに進む",
+      "direction": "one-way",
+      "kind": "sequence"
+    },
+    {
+      "from": "async_next",
+      "to": "async_notify",
+      "verb": "作業を続ける間に受け取る",
+      "direction": "one-way",
+      "kind": "sequence"
+    }
+  ],
+  "groups": [
+    {
+      "label": "同期の例",
+      "element_ids": [
+        "sync_request",
+        "sync_wait",
+        "sync_next"
+      ]
+    },
+    {
+      "label": "非同期の例",
+      "element_ids": [
+        "async_request",
+        "async_next",
+        "async_notify"
+      ]
+    }
+  ],
+  "candidate_patterns": [
+    "対比＋直列"
+  ],
+  "selected_pattern": "対比＋直列",
+  "style_rules": {
+    "shape_semantics": "枠内のラベルが要素を表す。",
+    "color_semantics": "色は区別の補助。位置と文字でも区別する。",
+    "line_semantics": "矢印は明記した順序や流れだけを表す。",
+    "font_weight_rules": "見出しを太字、説明を通常の太さにする。"
+  },
+  "open_questions": [],
+  "explanation": {
+    "reader_question": "呼び出し側は、依頼の完了を待ってから次の作業を始める？",
+    "understanding_gap": "同じ「依頼する」でも、次の作業へ進む条件が異なることが見えにくい。",
+    "visual_strategy": "二列に並べて各例の順序を示し、待つ段階と待たずに進む段階を対比する。間隔は所要時間を表さない。",
+    "output_format": "svg",
+    "source_basis": [
+      {
+        "id": "p1",
+        "text": "同期の例は依頼の完了を待ち、その後に次の作業を始める。"
+      },
+      {
+        "id": "p2",
+        "text": "非同期の例は依頼開始後、完了を待たず次の作業を始め、作業中に完了通知を受け取る。"
+      },
+      {
+        "id": "p3",
+        "text": "比較対象は次の作業の開始タイミングであり、処理時間や速度は規定しない。"
+      }
+    ],
+    "claim_visual_map": [
+      {
+        "claim": "同期の例では完了後に次の作業を始める。",
+        "source_ids": [
+          "p1"
+        ],
+        "element_ids": [
+          "sync_request",
+          "sync_wait",
+          "sync_next"
+        ]
+      },
+      {
+        "claim": "非同期の例では待たずに次の作業を始め、作業中に通知を受け取る。",
+        "source_ids": [
+          "p2"
+        ],
+        "element_ids": [
+          "async_request",
+          "async_next",
+          "async_notify"
+        ]
+      },
+      {
+        "claim": "図の間隔は所要時間や速度差を表さない。",
+        "source_ids": [
+          "p3"
+        ],
+        "element_ids": [
+          "sync_wait",
+          "async_next"
+        ]
+      }
+    ]
+  }
+}

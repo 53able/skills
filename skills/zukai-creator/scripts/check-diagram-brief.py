@@ -12,6 +12,53 @@ def fail(msg: str) -> None:
     sys.exit(1)
 
 
+def required_text(data: dict, key: str, context: str) -> str:
+    value = data.get(key)
+    if not isinstance(value, str) or not value.strip():
+        fail(f"{context}.{key} は空でない文字列である必要があります")
+    return value.strip()
+
+
+def required_list(data: dict, key: str, context: str) -> list:
+    value = data.get(key)
+    if not isinstance(value, list) or not value:
+        fail(f"{context}.{key} は空でないリストである必要があります")
+    return value
+
+
+def check_explanation(explanation: object, element_ids: set) -> None:
+    if not isinstance(explanation, dict):
+        fail("explanation はオブジェクトである必要があります")
+    for key in ["reader_question", "understanding_gap", "visual_strategy"]:
+        required_text(explanation, key, "explanation")
+    output_format = required_text(explanation, "output_format", "explanation")
+    if output_format not in ["mermaid", "svg"]:
+        fail("explanation.output_format は mermaid または svg である必要があります")
+
+    source_ids = set()
+    for idx, source in enumerate(required_list(explanation, "source_basis", "explanation"), 1):
+        context = f"explanation.source_basis[{idx}]"
+        if not isinstance(source, dict):
+            fail(f"{context} はオブジェクトである必要があります")
+        source_id = required_text(source, "id", context)
+        required_text(source, "text", context)
+        if source_id in source_ids:
+            fail(f"ソース id が重複しています: {source_id}")
+        source_ids.add(source_id)
+
+    for idx, mapping in enumerate(required_list(explanation, "claim_visual_map", "explanation"), 1):
+        context = f"explanation.claim_visual_map[{idx}]"
+        if not isinstance(mapping, dict):
+            fail(f"{context} はオブジェクトである必要があります")
+        required_text(mapping, "claim", context)
+        for key, known_ids in [("source_ids", source_ids), ("element_ids", element_ids)]:
+            for reference in required_list(mapping, key, context):
+                if not isinstance(reference, str) or not reference.strip():
+                    fail(f"{context}.{key} の参照は空でない文字列である必要があります")
+                if reference.strip() not in known_ids:
+                    fail(f"{context}.{key} が未知の id を参照しています: {reference}")
+
+
 def main() -> None:
     if len(sys.argv) != 2:
         fail("使い方: check-diagram-brief.py path/to/brief.json")
@@ -22,6 +69,11 @@ def main() -> None:
         data = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         fail(f"不正な JSON: {exc.lineno} 行 {exc.colno} 列: {exc.msg}")
+    except (OSError, UnicodeError) as exc:
+        fail(f"ファイルを読み込めません: {exc}")
+
+    if not isinstance(data, dict):
+        fail("ブリーフは JSON オブジェクトである必要があります")
 
     missing = [key for key in REQUIRED_TOP if key not in data]
     if missing:
@@ -87,6 +139,9 @@ def main() -> None:
             for eid in element_ids:
                 if str(eid).strip() not in ids:
                     fail(f"グループ {idx} ('{label}') が未知の要素 id を参照しています: {eid}")
+
+    if "explanation" in data:
+        check_explanation(data["explanation"], ids)
 
     print(f"OK: {path} は利用可能な図解ブリーフです（要素 {len(ids)} 件、関係 {len(relationships or [])} 件、グループ {len(groups or [])} 件）。")
     for warning in warnings:
