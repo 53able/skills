@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" role="img" aria-labelledby="title desc">
+  <title id="title">同期と非同期：次の作業を始める条件</title>
+  <desc id="desc">同期の例は依頼し、完了を待ってから次の作業を始める。非同期の例は依頼開始後、待たずに次の作業を始め、作業中に完了通知を受け取る。矢印は順序だけを示し、所要時間は表さない。</desc>
+  <style>text { font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif; fill: #172b4d; font-size: 23px; } .heading { font-size: 30px; font-weight: 700; } .label { font-weight: 700; } .note { font-size: 20px; } .edge { fill: none; stroke: #52647a; stroke-width: 2; marker-end: url(#arrow); }</style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#52647a"/></marker></defs>
+  <rect width="1000" height="560" fill="#fff"/>
+  <text x="40" y="48" class="heading">同期と非同期：次の作業を始める条件</text>
+  <rect x="40" y="76" width="440" height="398" rx="12" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="520" y="76" width="440" height="398" rx="12" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="260" y="116" text-anchor="middle" class="label">同期の例</text>
+  <text x="740" y="116" text-anchor="middle" class="label">非同期の例</text>
+  <g id="sync_request"><rect x="60" y="140" width="400" height="64" rx="8" fill="#e8f0fe" stroke="#4267a5"/><text x="260" y="181" text-anchor="middle">依頼する</text></g>
+  <path d="M260 204 V254" class="edge"/>
+  <g id="sync_wait"><rect x="60" y="264" width="400" height="64" rx="8" fill="#fff3dd" stroke="#8c681f"/><text x="260" y="305" text-anchor="middle" class="label">完了を待つ</text></g>
+  <path d="M260 328 V382" class="edge"/><text x="282" y="365" class="note">完了後</text>
+  <g id="sync_next"><rect x="60" y="392" width="400" height="64" rx="8" fill="#e7f5ef" stroke="#39795a"/><text x="260" y="433" text-anchor="middle">次の作業を始める</text></g>
+  <g id="async_request"><rect x="540" y="140" width="400" height="64" rx="8" fill="#e8f0fe" stroke="#4267a5"/><text x="740" y="181" text-anchor="middle">依頼を開始する</text></g>
+  <path d="M740 204 V254" class="edge"/><text x="762" y="240" class="note">待たずに</text>
+  <g id="async_next"><rect x="540" y="264" width="400" height="64" rx="8" fill="#e7f5ef" stroke="#39795a"/><text x="740" y="305" text-anchor="middle" class="label">待たずに次の作業を始める</text></g>
+  <path d="M740 328 V382" class="edge"/><text x="762" y="365" class="note">作業中に</text>
+  <g id="async_notify"><rect x="540" y="392" width="400" height="64" rx="8" fill="#e8f0fe" stroke="#4267a5"/><text x="740" y="433" text-anchor="middle">作業中に完了通知を受け取る</text></g>
+  <text x="40" y="516" class="note">矢印は呼び出し側の進行順序。間隔は所要時間や速度差を示しません。</text>
+</svg>

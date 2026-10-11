@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 510" role="img" aria-labelledby="title desc">
+  <title id="title">三層の構造と役割</title>
+  <desc id="desc">例のシステムの枠内に、上から表示層、処理層、保存層がある。表示層は画面、処理層は業務の判断、保存層はデータの保持を担当する。上下配置は実行順序を表さない。</desc>
+  <style>text { font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif; fill: #172b4d; font-size: 24px; } .heading { font-size: 30px; font-weight: 700; } .label { font-weight: 700; } .note { font-size: 20px; }</style>
+  <rect width="800" height="510" fill="#fff"/>
+  <text x="40" y="50" class="heading">三層の構造と役割</text>
+  <g id="system">
+    <rect x="40" y="76" width="720" height="358" rx="16" fill="#f8fafc" stroke="#52647a" stroke-width="2"/>
+    <text x="66" y="112" class="label">例のシステム</text>
+    <g id="presentation"><rect x="66" y="134" width="668" height="78" rx="8" fill="#e8f0fe" stroke="#4267a5"/><text x="92" y="183" class="label">表示層</text><text x="310" y="183">担当：画面</text></g>
+    <g id="processing"><rect x="66" y="232" width="668" height="78" rx="8" fill="#e7f5ef" stroke="#39795a"/><text x="92" y="281" class="label">処理層</text><text x="310" y="281">担当：業務の判断</text></g>
+    <g id="storage"><rect x="66" y="330" width="668" height="78" rx="8" fill="#fff3dd" stroke="#8c681f"/><text x="92" y="379" class="label">保存層</text><text x="310" y="379">担当：データの保持</text></g>
+  </g>
+  <text x="40" y="478" class="note">上下は役割の整理。実行順序・通信経路は示していません。</text>
+</svg>

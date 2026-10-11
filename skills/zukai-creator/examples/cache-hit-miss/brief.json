@@ -1,0 +1,148 @@
+{
+  "purpose": "ヒットとミスで処理がどう分かれるか説明する。",
+  "audience": "キャッシュを初めて学ぶ読者",
+  "message": "キャッシュの有無で取得経路が分かれ、ミス時は取得後に保存する。",
+  "elements": [
+    {
+      "id": "request",
+      "label": "データ要求",
+      "type": "process"
+    },
+    {
+      "id": "check",
+      "label": "キャッシュにある？",
+      "type": "state"
+    },
+    {
+      "id": "cached",
+      "label": "キャッシュのデータ",
+      "type": "data"
+    },
+    {
+      "id": "fetch",
+      "label": "保存元から取得",
+      "type": "process"
+    },
+    {
+      "id": "store",
+      "label": "キャッシュに保存",
+      "type": "process"
+    },
+    {
+      "id": "reply",
+      "label": "データを返す",
+      "type": "process"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "request",
+      "to": "check",
+      "verb": "調べる",
+      "direction": "one-way",
+      "kind": "flow"
+    },
+    {
+      "from": "check",
+      "to": "cached",
+      "verb": "ある：ヒット",
+      "direction": "one-way",
+      "kind": "flow"
+    },
+    {
+      "from": "cached",
+      "to": "reply",
+      "verb": "返す",
+      "direction": "one-way",
+      "kind": "flow"
+    },
+    {
+      "from": "check",
+      "to": "fetch",
+      "verb": "ない：ミス",
+      "direction": "one-way",
+      "kind": "flow"
+    },
+    {
+      "from": "fetch",
+      "to": "store",
+      "verb": "保存する",
+      "direction": "one-way",
+      "kind": "sequence"
+    },
+    {
+      "from": "store",
+      "to": "reply",
+      "verb": "返す",
+      "direction": "one-way",
+      "kind": "sequence"
+    }
+  ],
+  "groups": [],
+  "candidate_patterns": [
+    "分岐"
+  ],
+  "selected_pattern": "分岐",
+  "style_rules": {
+    "shape_semantics": "枠内のラベルが要素を表す。",
+    "color_semantics": "色は区別の補助。位置と文字でも区別する。",
+    "line_semantics": "矢印は明記した順序や流れだけを表す。",
+    "font_weight_rules": "見出しを太字、説明を通常の太さにする。"
+  },
+  "open_questions": [],
+  "explanation": {
+    "reader_question": "データがキャッシュにある場合とない場合で、処理はどう変わる？",
+    "understanding_gap": "ヒットとミスの名称だけでは、ミス時の取得と保存の順序が見えない。",
+    "visual_strategy": "有無の分岐を明示し、二つの経路を返却へ合流させる。",
+    "output_format": "mermaid",
+    "source_basis": [
+      {
+        "id": "p1",
+        "text": "要求されたデータがキャッシュにあるかを調べる。"
+      },
+      {
+        "id": "p2",
+        "text": "ヒット時はキャッシュのデータを返す。"
+      },
+      {
+        "id": "p3",
+        "text": "ミス時は保存元から取得し、キャッシュに保存してから返す。"
+      }
+    ],
+    "claim_visual_map": [
+      {
+        "claim": "キャッシュの有無を調べる。",
+        "source_ids": [
+          "p1"
+        ],
+        "element_ids": [
+          "request",
+          "check"
+        ]
+      },
+      {
+        "claim": "ヒット時はキャッシュのデータを返す。",
+        "source_ids": [
+          "p2"
+        ],
+        "element_ids": [
+          "check",
+          "cached",
+          "reply"
+        ]
+      },
+      {
+        "claim": "ミス時は取得、保存、返却の順に進む。",
+        "source_ids": [
+          "p3"
+        ],
+        "element_ids": [
+          "check",
+          "fetch",
+          "store",
+          "reply"
+        ]
+      }
+    ]
+  }
+}

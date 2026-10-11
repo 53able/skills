@@ -3,6 +3,18 @@
   "audience": "",
   "message": "",
   "source_summary": "",
+  "explanation": {
+    "reader_question": "",
+    "understanding_gap": "",
+    "visual_strategy": "",
+    "output_format": "mermaid|svg",
+    "source_basis": [
+      {"id": "s1", "text": ""}
+    ],
+    "claim_visual_map": [
+      {"claim": "", "source_ids": ["s1"], "element_ids": ["e1"]}
+    ]
+  },
   "elements": [
     {"id": "e1", "label": "", "type": "actor|concept|process|data|state|artifact|other", "priority": "primary|secondary|support"}
   ],

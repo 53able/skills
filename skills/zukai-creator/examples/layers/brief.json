@@ -1,0 +1,127 @@
+{
+  "purpose": "三つの層の構成と担当を説明する。",
+  "audience": "層の名前と役割を対応づけたい読者",
+  "message": "システムは三層で構成され、各層が異なる役割を持つ。",
+  "elements": [
+    {
+      "id": "system",
+      "label": "例のシステム",
+      "type": "artifact"
+    },
+    {
+      "id": "presentation",
+      "label": "表示層",
+      "type": "concept"
+    },
+    {
+      "id": "processing",
+      "label": "処理層",
+      "type": "concept"
+    },
+    {
+      "id": "storage",
+      "label": "保存層",
+      "type": "concept"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "system",
+      "to": "presentation",
+      "verb": "含む",
+      "direction": "none",
+      "kind": "include"
+    },
+    {
+      "from": "system",
+      "to": "processing",
+      "verb": "含む",
+      "direction": "none",
+      "kind": "include"
+    },
+    {
+      "from": "system",
+      "to": "storage",
+      "verb": "含む",
+      "direction": "none",
+      "kind": "include"
+    }
+  ],
+  "groups": [
+    {
+      "label": "システムの三層",
+      "element_ids": [
+        "presentation",
+        "processing",
+        "storage"
+      ]
+    }
+  ],
+  "candidate_patterns": [
+    "包含＋レイヤー"
+  ],
+  "selected_pattern": "包含＋レイヤー",
+  "style_rules": {
+    "shape_semantics": "枠内のラベルが要素を表す。",
+    "color_semantics": "色は区別の補助。位置と文字でも区別する。",
+    "line_semantics": "矢印は明記した順序や流れだけを表す。",
+    "font_weight_rules": "見出しを太字、説明を通常の太さにする。"
+  },
+  "open_questions": [],
+  "explanation": {
+    "reader_question": "システムはどの層で構成され、それぞれ何を担当する？",
+    "understanding_gap": "名前の列挙だけでは、全体と三層の関係や各担当を同時に追いにくい。",
+    "visual_strategy": "全体の枠に三つの層を入れ、各層に担当を添える。矢印を使わず構造だけを示す。",
+    "output_format": "svg",
+    "source_basis": [
+      {
+        "id": "p1",
+        "text": "システムは表示層、処理層、保存層で構成される。"
+      },
+      {
+        "id": "p2",
+        "text": "表示層は画面、処理層は業務の判断、保存層はデータの保持を担当する。"
+      },
+      {
+        "id": "p3",
+        "text": "上から表示層、処理層、保存層に配置するが、実行順序や通信経路は規定しない。"
+      }
+    ],
+    "claim_visual_map": [
+      {
+        "claim": "全体に三層が含まれる。",
+        "source_ids": [
+          "p1"
+        ],
+        "element_ids": [
+          "system",
+          "presentation",
+          "processing",
+          "storage"
+        ]
+      },
+      {
+        "claim": "三層はそれぞれ異なる担当を持つ。",
+        "source_ids": [
+          "p2"
+        ],
+        "element_ids": [
+          "presentation",
+          "processing",
+          "storage"
+        ]
+      },
+      {
+        "claim": "上下配置は役割の整理であり、処理順序を示さない。",
+        "source_ids": [
+          "p3"
+        ],
+        "element_ids": [
+          "presentation",
+          "processing",
+          "storage"
+        ]
+      }
+    ]
+  }
+}
