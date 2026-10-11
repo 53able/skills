@@ -45,15 +45,4 @@
 
 比喩を使う場合は「どの概念が何に対応するか」と「どこまで対応するか」を説明する。直接の関係図で伝わるなら比喩を足さない。
 
-## anatomyから参考にした原則
-
-参照コミット: `dbf697a527bbf7d358668e1557cb1e35ff725d46`。原則を一般の静的な説明図へ応用し、手順は独自に記述している。
-
-| 参考にした考え方 | このスキルへの適用 | 出典 |
-|---|---|---|
-| 挙動を整理し、概念と機構・部品を対応づけてから描く | 理解の問いから根拠と図の要素を対応づける | [SKILL.md:52–64](https://github.com/wheresryan22/anatomy/blob/dbf697a527bbf7d358668e1557cb1e35ff725d46/SKILL.md#L52-L64) |
-| SVGなどの成果物を作る | 図解仕様に加えて実際の図ファイルを納品する | [SKILL.md:98–101](https://github.com/wheresryan22/anatomy/blob/dbf697a527bbf7d358668e1557cb1e35ff725d46/SKILL.md#L98-L101) |
-| 部品と説明の対応を保つ | ラベル・線・注釈を同じブリーフと照合する | [walkthrough.md:5–21](https://github.com/wheresryan22/anatomy/blob/dbf697a527bbf7d358668e1557cb1e35ff725d46/references/walkthrough.md#L5-L21) |
-| 表示結果を検査する | 意味照合と実描画の確認を別々に記録する | [SKILL.md:67–73](https://github.com/wheresryan22/anatomy/blob/dbf697a527bbf7d358668e1557cb1e35ff725d46/SKILL.md#L67-L73)、[verify.md](https://github.com/wheresryan22/anatomy/blob/dbf697a527bbf7d358668e1557cb1e35ff725d46/references/verify.md) |
-
 等角投影、機械の比喩、3D、対話型の挙動や部品数は制作要件にしない。図の密度や装飾を増やすことを学習効果の証明とせず、読者の問いに答えられる構造を選ぶ。
