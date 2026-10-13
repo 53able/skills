@@ -24,6 +24,7 @@ evidence/
 
 # OMX runtime state
 .omc/
+.omx-state-locks.identity.json
 
 # Credentials and local secrets
 .validation-secrets/
