@@ -108,6 +108,7 @@ WXT を使ったブラウザ拡張の設計・実装・検証を支援するス�
 
 実装プランの品質担保・コードリーディング・コミット・PR など、着手前後の手順をエージェントに載せるスキル。
 
+- **best-programmer** — 優れたプログラマーの行動原則（一次資料を読む、エラーメッセージを読む、推測しない、問題を分解する、コンピュータのせいにしない、単純に保つ、知らないと言う）を、デバッグ・実装・点検の作業手順として適用する。スキル同梱の `references/principles.md`（原則と優先順位）と `assets/review-checklist.md`（10項目の点検チェックリスト）を使う。
 - **self-refine** — プラン実行前に Multi-Aspect 評価（目的整合性・影響範囲・前提妥当性・実行可能性・認知負荷）でセルフリファインし、全次元 OK になってから実行する。「実行して」「進めて」「go」の直前に使用。
 - **context-to-gantt** — 議事録・要件・タスクリストなどのコンテキストからタスクと期間を抽出し、Kibo UI スタイルのガントチャートを単一 HTML で生成する。ビルド不要でブラウザ共有できる。
 - **code-reading** — コードリーディングを取得・処理・管理の3層フレームワークで効率的に実行する。実装をむやみに精読せず、インターフェイスと役割の理解に読む箇所を絞る。複雑なケースではサブエージェント起動を推奨。
@@ -198,6 +199,7 @@ npx skills add 53able/skills --skill pake-app-builder
 npx skills add 53able/skills --skill css-layout
 npx skills add 53able/skills --skill macos-screenshot-capture
 npx skills add 53able/skills --skill wxt-extension-development
+npx skills add 53able/skills --skill best-programmer
 npx skills add 53able/skills --skill self-refine
 npx skills add 53able/skills --skill context-to-gantt
 npx skills add 53able/skills --skill code-reading
@@ -255,6 +257,7 @@ npx skills add 53able/skills --skill pake-app-builder -g -a cursor
 npx skills add 53able/skills --skill css-layout -g -a cursor
 npx skills add 53able/skills --skill macos-screenshot-capture -g -a cursor
 npx skills add 53able/skills --skill wxt-extension-development -g -a cursor
+npx skills add 53able/skills --skill best-programmer -g -a cursor
 npx skills add 53able/skills --skill self-refine -g -a cursor
 npx skills add 53able/skills --skill context-to-gantt -g -a cursor
 npx skills add 53able/skills --skill code-reading -g -a cursor
@@ -314,6 +317,7 @@ npx skills add https://github.com/53able/skills/tree/main/skills/pake-app-builde
 npx skills add https://github.com/53able/skills/tree/main/skills/css-layout -g
 npx skills add https://github.com/53able/skills/tree/main/skills/macos-screenshot-capture -g
 npx skills add https://github.com/53able/skills/tree/main/skills/wxt-extension-development -g
+npx skills add https://github.com/53able/skills/tree/main/skills/best-programmer -g
 npx skills add https://github.com/53able/skills/tree/main/skills/self-refine -g
 npx skills add https://github.com/53able/skills/tree/main/skills/context-to-gantt -g
 npx skills add https://github.com/53able/skills/tree/main/skills/code-reading -g
